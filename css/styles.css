@@ -8,8 +8,9 @@ body,td,th,p{
 	line-height: 1.5;
 }
 body {
+  max-width:1024px;
 	background-color: #fdfdfd;
-	margin: 0;
+	margin: 0 auto;
 	position:relative;
 }
 ul, li {
