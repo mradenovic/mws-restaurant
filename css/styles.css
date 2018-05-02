@@ -162,7 +162,7 @@ nav h1 a {
   background-color: #f3f3f3;
   list-style: outside none none;
   margin: 0;
-  padding: 30px 15px 60px;
+  padding: 15px 10px;
   text-align: center;
 }
 
@@ -268,18 +268,13 @@ footer {
   padding: 2px 0;
   text-align: center;
   text-transform: uppercase;
-  /* width: 90%; */
 }
 
 .restaurant-container, .reviews-container {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
-  padding: 140px 40px 30px;
+  padding: 15px 15px;
   /* width: 50%; */
-}
-
-.reviews-container {
-  padding: 30px 40px 80px;
 }
 
 /* TODO: add class 'reviews-header' */
@@ -301,12 +296,9 @@ footer {
   border: 2px solid #f3f3f3;
   list-style-type: none;
   margin: 0 0 30px;
-  padding: 0 20px 20px;
+  padding: 15px;
 }
 
-.reviews-list li p {
-  margin: 0 0 10px;
-}
 
 .restaurant-hours td {
   color: #666;
