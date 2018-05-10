@@ -215,7 +215,7 @@ nav h1 a {
   width: 100%;
 }
 
-.restaurants-list li h1 {
+.restaurants-list li a h2 {
   color: #f18200;
   font-family: Arial, sans-serif;
   font-size: 14pt;
@@ -230,7 +230,8 @@ nav h1 a {
   margin: 0;
   font-size: 11pt;
 }
-
+/* TODO: remove 'View Details' button
+   keep the code until final decision is made  
 .restaurants-list li a {
   background-color: orange;
   border-bottom: 3px solid #eee;
@@ -243,7 +244,7 @@ nav h1 a {
   text-decoration: none;
   text-transform: uppercase;
 }
-
+ */
 /* ====================== Restaurant Details ====================== */
 
 header {
