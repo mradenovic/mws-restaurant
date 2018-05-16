@@ -247,7 +247,7 @@ nav h1 a {
  */
 /* ====================== Restaurant Details ====================== */
 
-header {
+.main-header {
   position: fixed;
   top: 0;
   max-width: 1024px;
