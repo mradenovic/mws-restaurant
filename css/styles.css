@@ -349,6 +349,35 @@ footer {
   padding: 15px;
 }
 
+.review-header {
+  background-color: #333;
+}
+
+.review-heading {
+  padding: 1em;
+}
+
+.review-name {
+  font-size: 1.5em;
+  color: #ddd;
+}
+
+.review-date {
+  float: right;
+  color: #aaa;
+}
+
+.review-rating {
+  background-color: orange;
+  border-radius: 5px;
+  color: #fff;
+  display: inline-block;
+  font-size: 1.5em;
+  padding: 5px 30px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase; 
+}
 
 .restaurant-hours td {
   color: #666;
