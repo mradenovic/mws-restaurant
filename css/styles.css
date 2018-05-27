@@ -11,7 +11,7 @@ body, td, th, p {
 }
 
 body {
-  max-width: 1024px;
+  width: 100%;
   background-color: #fdfdfd;
   margin: 0 auto;
   position: relative;
@@ -254,7 +254,7 @@ select:focus {
 .main-header {
   position: fixed;
   top: 0;
-  max-width: 1024px;
+  width: 100%;
   width: 100%;
   z-index: 1000;
 }
