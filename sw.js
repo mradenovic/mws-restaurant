@@ -35,9 +35,6 @@ self.addEventListener('fetch', function(event) {
         return fetch(fetchRequest).then(
           function(response) {
             // Check if we received a valid response
-            if (!response.ok) {
-              console.log('Response status', response.status);
-            }
             if(!response || response.status !== 200 || response.type !== 'basic') {
               return response;
             }
