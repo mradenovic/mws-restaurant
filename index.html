@@ -20,6 +20,10 @@
   <!-- Main content -->
   <main class="main-content header-only">
     <!-- Map container -->
+    <div id="skip-map">
+      <a href="#neighborhoods-select">Skip the map</a>
+    </div>
+
     <section id="map-container" class="map-container">
       <div id="map" class="map"></div>
     </section>
@@ -59,10 +63,11 @@
     Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
   </footer>
 
-  <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
-  <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
+  <script charset="utf-8" src="js/dbhelper.js"></script>
+  <script charset="utf-8" src="js/main.js"></script>
+  <script charset="utf-8" src="js/scroll.js"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaNOX7XbtJ6LTgCHIVtxoC2VFGukikTf8&libraries=places&callback=initMap"></script>
-  <script type="text/javascript" src="js/register-sw.js"></script>
+  <script src="js/register-sw.js"></script>
 
 </body>
 
