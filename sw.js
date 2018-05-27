@@ -8,13 +8,13 @@
 var CACHE_NAME = 'restaurants-cache-v1';
 var urlsToCache = [
   '/',
-  'restaurant.html',
+  '/restaurant.html',
   '/css/styles.css',
   '/js/main.js',
   '/js/dbhelper.js',
   '/js/scroll.js',
   '/js/restaurant_info.js',
-  '/data/restaurants.js',
+  '/data/restaurants.json',
 ];
 
 self.addEventListener('install', function(event) {
