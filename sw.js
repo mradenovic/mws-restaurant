@@ -12,6 +12,7 @@ var urlsToCache = [
   '/css/styles.css',
   '/js/main.js',
   '/js/dbhelper.js',
+  '/js/scroll.js',
   '/js/restaurant_info.js',
   '/data/restaurants.js',
 ];
