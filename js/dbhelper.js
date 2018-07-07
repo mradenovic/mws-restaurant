@@ -48,16 +48,17 @@ class DBHelper {
    * Fetch restaurants by a cuisine type with proper error handling.
    */
   static fetchRestaurantByCuisine(cuisine, callback) {
-    // Fetch all restaurants  with proper error handling
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
+    // fetch restaurants by cuisine
+    fetch(`http://localhost:1337/restaurants?cuisine=${cuisine}`)
+      .then(response => {
+        return response.json();
+      })
+      .catch(error => {
         callback(error, null);
-      } else {
-        // Filter restaurants to have only given cuisine type
-        const results = restaurants.filter(r => r.cuisine_type == cuisine);
-        callback(null, results);
-      }
-    });
+      })
+      .then(restaurants => {
+        callback(null, restaurants);
+      });
   }
 
   /**
