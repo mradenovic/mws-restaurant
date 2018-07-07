@@ -82,21 +82,17 @@ class DBHelper {
    * Fetch restaurants by a cuisine and a neighborhood with proper error handling.
    */
   static fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, callback) {
-    // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
+    // fetch restaurants by cuisine and neighborhood
+    fetch(`http://localhost:1337/restaurants?cuisine=${cuisine}&neighborhood=${neighborhood}`)
+      .then(response => {
+        return response.json();
+      })
+      .catch(error => {
         callback(error, null);
-      } else {
-        let results = restaurants
-        if (cuisine != 'all') { // filter by cuisine
-          results = results.filter(r => r.cuisine_type == cuisine);
-        }
-        if (neighborhood != 'all') { // filter by neighborhood
-          results = results.filter(r => r.neighborhood == neighborhood);
-        }
-        callback(null, results);
-      }
-    });
+      })
+      .then(restaurants => {
+        callback(null, restaurants);
+      });
   }
 
   /**
