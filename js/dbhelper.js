@@ -65,16 +65,17 @@ class DBHelper {
    * Fetch restaurants by a neighborhood with proper error handling.
    */
   static fetchRestaurantByNeighborhood(neighborhood, callback) {
-    // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
+    // fetch restaurants by neighborhood
+    fetch(`http://localhost:1337/restaurants?neighborhood=${neighborhood}`)
+      .then(response => {
+        return response.json();
+      })
+      .catch(error => {
         callback(error, null);
-      } else {
-        // Filter restaurants to have only given neighborhood
-        const results = restaurants.filter(r => r.neighborhood == neighborhood);
-        callback(null, results);
-      }
-    });
+      })
+      .then(restaurants => {
+        callback(null, restaurants);
+      });
   }
 
   /**
