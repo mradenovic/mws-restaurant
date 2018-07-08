@@ -40,6 +40,7 @@ class DBHelper {
         callback('Restaurant does not exist', null);
       })
       .then(restaurant => {
+        console.log(restaurant);
         callback(null, restaurant);
       });
   }
@@ -49,7 +50,7 @@ class DBHelper {
    */
   static fetchRestaurantByCuisine(cuisine, callback) {
     // fetch restaurants by cuisine
-    fetch(`http://localhost:1337/restaurants?cuisine=${cuisine}`)
+    fetch(`http://localhost:1337/restaurants?cuisine_type=${cuisine}`)
       .then(response => {
         return response.json();
       })
@@ -83,7 +84,7 @@ class DBHelper {
    */
   static fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, callback) {
     // fetch restaurants by cuisine and neighborhood
-    fetch(`http://localhost:1337/restaurants?cuisine=${cuisine}&neighborhood=${neighborhood}`)
+    fetch(`http://localhost:1337/restaurants?cuisine_type=${cuisine}&neighborhood=${neighborhood}`)
       .then(response => {
         return response.json();
       })
