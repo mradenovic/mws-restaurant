@@ -13,6 +13,20 @@ class DBHelper {
   }
 
   /**
+   * Handle fetch errors
+   * 
+   * https://www.tjvantoll.com/2015/09/13/fetch-and-errors/
+   * 
+   * @param {Prommise} response 
+   */
+  static getData(response) {
+    if (!response.ok) {
+      throw Error(response.status.text)
+    }
+    return response.json();
+  }
+
+  /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
@@ -32,16 +46,12 @@ class DBHelper {
   static fetchRestaurantById(id, callback) {
     // fetch restaurant
     fetch(`http://localhost:1337/restaurants?id=${id}`)
-      .then(response => {
-        return response.json();
+      .then(DBHelper.getData)
+      .then(restaurant => {
+        callback(null, restaurant);
       })
       .catch(error => {
-        console.log(error);
         callback('Restaurant does not exist', null);
-      })
-      .then(restaurant => {
-        console.log(restaurant);
-        callback(null, restaurant);
       });
   }
 
@@ -51,14 +61,12 @@ class DBHelper {
   static fetchRestaurantByCuisine(cuisine, callback) {
     // fetch restaurants by cuisine
     fetch(`http://localhost:1337/restaurants?cuisine_type=${cuisine}`)
-      .then(response => {
-        return response.json();
+      .then(DBHelper.getData)
+      .then(restaurants => {
+        callback(null, restaurants);
       })
       .catch(error => {
         callback(error, null);
-      })
-      .then(restaurants => {
-        callback(null, restaurants);
       });
   }
 
@@ -68,16 +76,14 @@ class DBHelper {
   static fetchRestaurantByNeighborhood(neighborhood, callback) {
     // fetch restaurants by neighborhood
     fetch(`http://localhost:1337/restaurants?neighborhood=${neighborhood}`)
-      .then(response => {
-        return response.json();
+      .then(DBHelper.getData)
+      .then(restaurants => {
+        callback(null, restaurants);
       })
       .catch(error => {
         callback(error, null);
-      })
-      .then(restaurants => {
-        callback(null, restaurants);
       });
-  }
+}
 
   /**
    * Fetch restaurants by a cuisine and a neighborhood with proper error handling.
@@ -85,16 +91,14 @@ class DBHelper {
   static fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, callback) {
     // fetch restaurants by cuisine and neighborhood
     fetch(`http://localhost:1337/restaurants?cuisine_type=${cuisine}&neighborhood=${neighborhood}`)
-      .then(response => {
-        return response.json();
+      .then(DBHelper.getData)
+      .then(restaurants => {
+        callback(null, restaurants);
       })
       .catch(error => {
         callback(error, null);
-      })
-      .then(restaurants => {
-        callback(null, restaurants);
       });
-  }
+}
 
   /**
    * Fetch all neighborhoods with proper error handling.
