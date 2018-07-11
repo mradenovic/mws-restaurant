@@ -61,7 +61,11 @@ class DBHelper {
    */
   static fetchRestaurantByCuisine(cuisine, callback) {
     // fetch restaurants by cuisine
-    fetch(`http://localhost:1337/restaurants?cuisine_type=${cuisine}`)
+    let url = DBHelper.DATABASE_URL;
+    if (cuisine != 'all') {
+      url += `?cuisine_type=${cuisine}`;
+    }
+    fetch(url)
       .then(DBHelper.getData)
       .then(restaurants => {
         callback(null, restaurants);
@@ -76,7 +80,11 @@ class DBHelper {
    */
   static fetchRestaurantByNeighborhood(neighborhood, callback) {
     // fetch restaurants by neighborhood
-    fetch(`http://localhost:1337/restaurants?neighborhood=${neighborhood}`)
+    let url = DBHelper.DATABASE_URL;
+    if (neighborhood != 'all') {
+      url += `?neighborhood=${neighborhood}`;
+    }
+    fetch(url)
       .then(DBHelper.getData)
       .then(restaurants => {
         callback(null, restaurants);
@@ -91,7 +99,22 @@ class DBHelper {
    */
   static fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, callback) {
     // fetch restaurants by cuisine and neighborhood
-    fetch(`http://localhost:1337/restaurants?cuisine_type=${cuisine}&neighborhood=${neighborhood}`)
+    let url = DBHelper.DATABASE_URL;
+    url += '?';
+
+    // Add filter only if it is different from default
+    if (cuisine != 'all') {
+      url += `cuisine_type=${cuisine}`;
+    }
+    
+    if (neighborhood != 'all') {
+      if (cuisine != 'all') {
+        url += `&`;
+      }
+      url += `neighborhood=${neighborhood}`;
+    }
+
+    fetch(url)
       .then(DBHelper.getData)
       .then(restaurants => {
         callback(null, restaurants);
