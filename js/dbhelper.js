@@ -8,7 +8,7 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 1337 // Change this to your server port
+    const port = 1337; // Change this to your server port
     return `http://localhost:${port}/restaurants`;
   }
 
@@ -21,7 +21,7 @@ class DBHelper {
    */
   static getData(response) {
     if (!response.ok) {
-      throw Error(response.status.text)
+      throw Error(response.status.text);
     }
     return response.json();
   }
@@ -92,7 +92,7 @@ class DBHelper {
       .catch(error => {
         callback(error, null);
       });
-}
+  }
 
   /**
    * Fetch restaurants by a cuisine and a neighborhood with proper error handling.
@@ -109,7 +109,7 @@ class DBHelper {
     
     if (neighborhood != 'all') {
       if (cuisine != 'all') {
-        url += `&`;
+        url += '&';
       }
       url += `neighborhood=${neighborhood}`;
     }
@@ -122,7 +122,7 @@ class DBHelper {
       .catch(error => {
         callback(error, null);
       });
-}
+  }
 
   /**
    * Fetch all neighborhoods with proper error handling.
@@ -134,9 +134,9 @@ class DBHelper {
         callback(error, null);
       } else {
         // Get all neighborhoods from all restaurants
-        const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood)
+        const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood);
         // Remove duplicates from neighborhoods
-        const uniqueNeighborhoods = neighborhoods.filter((v, i) => neighborhoods.indexOf(v) == i)
+        const uniqueNeighborhoods = neighborhoods.filter((v, i) => neighborhoods.indexOf(v) == i);
         callback(null, uniqueNeighborhoods);
       }
     });
@@ -152,9 +152,9 @@ class DBHelper {
         callback(error, null);
       } else {
         // Get all cuisines from all restaurants
-        const cuisines = restaurants.map((v, i) => restaurants[i].cuisine_type)
+        const cuisines = restaurants.map((v, i) => restaurants[i].cuisine_type);
         // Remove duplicates from cuisines
-        const uniqueCuisines = cuisines.filter((v, i) => cuisines.indexOf(v) == i)
+        const uniqueCuisines = cuisines.filter((v, i) => cuisines.indexOf(v) == i);
         callback(null, uniqueCuisines);
       }
     });
