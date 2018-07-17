@@ -14,7 +14,6 @@ var urlsToCache = [
   '/js/dbhelper.js',
   '/js/scroll.js',
   '/js/restaurant_info.js',
-  '/data/restaurants.json',
 ];
 
 self.addEventListener('install', function(event) {
@@ -22,7 +21,6 @@ self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(function(cache) {
-        console.log('Opened cache');
         return cache.addAll(urlsToCache);
       })
   );
@@ -57,5 +55,5 @@ self.addEventListener('fetch', function(event) {
           }
         );
       })
-    );
+  );
 });
