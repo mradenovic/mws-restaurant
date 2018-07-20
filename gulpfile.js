@@ -3,15 +3,16 @@
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
+let cleanCSS = require('gulp-clean-css');
 var browserSync = require('browser-sync').create();
 var eslint = require('gulp-eslint');
-// var babel = require('gulp-babel');
+var babel = require('gulp-babel');
 // var babelify = require('babelify');
 // var browserify = require("browserify");
 // var connect = require("gulp-connect");
 // var source = require("vinyl-source-stream");
 // var buffer = require("vinyl-buffer");
-// var uglify = require("gulp-uglify");
+var uglify = require('gulp-uglify');
 // var sourcemaps = require("gulp-sourcemaps");
 
 gulp.task('default', ['copy'], function () {
@@ -53,11 +54,14 @@ gulp.task('sass', () => {
     .pipe(autoprefixer({
       browsers: ['last 2 versions']
     }))
-    .pipe(gulp.dest('dist/css'))
+    .pipe(cleanCSS())
+    .pipe(gulp.dest('dist/css'));
 });
 
 gulp.task('js', ['lint'], () => {
   gulp.src('src/**/*.js')
+    .pipe(babel())
+    .pipe(uglify())
     .pipe(gulp.dest('dist'));
 });
 
