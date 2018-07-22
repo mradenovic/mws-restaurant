@@ -10,10 +10,8 @@ var urlsToCache = [
   '/',
   '/restaurant.html',
   '/css/styles.css',
-  '/js/main.js',
-  '/js/dbhelper.js',
-  '/js/scroll.js',
-  '/js/restaurant_info.js',
+  '/js/index.js',
+  '/js/restaurant.js',
 ];
 
 self.addEventListener('install', function(event) {
