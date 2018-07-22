@@ -187,7 +187,7 @@ class RestaurantController {
   }
 }
 
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
   let restaurantControler = new RestaurantController();
   GoogleMapsLoader.load(google => restaurantControler.initMap(google));
 });

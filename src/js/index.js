@@ -8,8 +8,8 @@ class IndexController {
 
     const cuisine = document.getElementById('cuisines-select');
     const neighborhoods = document.getElementById('neighborhoods-select');
-    cuisine.addEventListener('change', event => this.updateRestaurants());
-    neighborhoods.addEventListener('change', event => this.updateRestaurants());
+    cuisine.addEventListener('change', () => this.updateRestaurants());
+    neighborhoods.addEventListener('change', () => this.updateRestaurants());
   }
   
   /**
@@ -188,7 +188,7 @@ class IndexController {
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
   let indexControler = new IndexController();
   indexControler.fetchNeighborhoods();
   indexControler.fetchCuisines();
