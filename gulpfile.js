@@ -6,7 +6,7 @@ var autoprefixer = require('gulp-autoprefixer');
 let cleanCSS = require('gulp-clean-css');
 var browserSync = require('browser-sync').create();
 var eslint = require('gulp-eslint');
-var browserify = require("gulp-browserify");
+var browserify = require('gulp-browserify');
 var uglify = require('gulp-uglify');
 
 gulp.task('default', ['copy'], function () {
