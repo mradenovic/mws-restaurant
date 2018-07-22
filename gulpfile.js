@@ -6,14 +6,8 @@ var autoprefixer = require('gulp-autoprefixer');
 let cleanCSS = require('gulp-clean-css');
 var browserSync = require('browser-sync').create();
 var eslint = require('gulp-eslint');
-var babel = require('gulp-babel');
-// var babelify = require('babelify');
-// var browserify = require("browserify");
-// var connect = require("gulp-connect");
-// var source = require("vinyl-source-stream");
-// var buffer = require("vinyl-buffer");
+var browserify = require("gulp-browserify");
 var uglify = require('gulp-uglify');
-// var sourcemaps = require("gulp-sourcemaps");
 
 gulp.task('default', ['copy'], function () {
   gulp.watch('src/**/*.*', ['reload']);
@@ -59,8 +53,8 @@ gulp.task('sass', () => {
 });
 
 gulp.task('js', ['lint'], () => {
-  gulp.src('src/**/*.js')
-    .pipe(babel())
+  gulp.src('src/**/*.js', { read: false })
+    .pipe(browserify({transform: ['babelify']}))
     .pipe(uglify())
     .pipe(gulp.dest('dist'));
 });
