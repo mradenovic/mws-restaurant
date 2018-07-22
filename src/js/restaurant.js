@@ -1,3 +1,4 @@
+import './utils/register-sw';
 import DBHelper from './utils/dbhelper.js';
 import GoogleMapsLoader from 'google-maps';
 GoogleMapsLoader.KEY = 'AIzaSyDaNOX7XbtJ6LTgCHIVtxoC2VFGukikTf8';
