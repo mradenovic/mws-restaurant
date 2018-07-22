@@ -1,4 +1,4 @@
-import DBHelper from './dbhelper.js';
+import DBHelper from './utils/dbhelper.js';
 import GoogleMapsLoader from 'google-maps';
 GoogleMapsLoader.KEY = 'AIzaSyDaNOX7XbtJ6LTgCHIVtxoC2VFGukikTf8';
 
@@ -128,7 +128,7 @@ class RestaurantController {
     const li = document.createElement('li');
     const article = document.createElement('article');
     li.appendChild(article);
-    
+
     const header = document.createElement('header');
     header.className = 'review-header';
     article.appendChild(header);
@@ -163,7 +163,7 @@ class RestaurantController {
   /**
    * Add restaurant name to the breadcrumb navigation menu
    */
-  fillBreadcrumb(restaurant=this.restaurant) {
+  fillBreadcrumb(restaurant = this.restaurant) {
     const breadcrumb = document.getElementById('breadcrumb');
     const li = document.createElement('li');
     li.innerHTML = restaurant.name;
@@ -191,4 +191,3 @@ document.addEventListener('DOMContentLoaded', () => {
   let restaurantControler = new RestaurantController();
   GoogleMapsLoader.load(google => restaurantControler.initMap(google));
 });
-
