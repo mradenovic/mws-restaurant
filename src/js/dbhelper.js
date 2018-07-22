@@ -1,7 +1,7 @@
 /**
  * Common database helper functions.
  */
-class DBHelper {
+export default class DBHelper {
 
   /**
    * Database URL.
@@ -52,7 +52,7 @@ class DBHelper {
         callback(null, restaurant);
       })
       .catch(error => {
-        callback('Restaurant does not exist', null);
+        callback(error, null);
       });
   }
 
@@ -178,7 +178,7 @@ class DBHelper {
   /**
    * Map marker for a restaurant.
    */
-  static mapMarkerForRestaurant(restaurant, map) {
+  static mapMarkerForRestaurant(google, restaurant, map) {
     const marker = new google.maps.Marker({
       position: restaurant.latlng,
       title: restaurant.name,
