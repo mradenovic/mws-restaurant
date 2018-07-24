@@ -1,3 +1,5 @@
+import idb from 'idb';
+
 /**
  * Common database helper functions.
  */
@@ -30,14 +32,26 @@ export default class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    // fetch restaurants
-    fetch(DBHelper.DATABASE_URL)
-      .then(DBHelper.getData)
+    // check idb for restaurants
+    this.idbGetRestaurants()
       .then(restaurants => {
-        callback(null, restaurants);
+        if (restaurants && restaurants.length > 0) {
+          callback(null, restaurants);
+        } else {
+          // fetch restaurants
+          fetch(DBHelper.DATABASE_URL)
+            .then(DBHelper.getData)
+            .then(restaurants => {
+              this.idbSetRestaurants(restaurants);
+              callback(null, restaurants);
+            })
+            .catch(error => {
+              callback(error, null);
+            });
+        }
       })
       .catch(error => {
-        callback(error, null);
+        console.log(error);
       });
   }
 
@@ -189,4 +203,45 @@ export default class DBHelper {
     return marker;
   }
 
+  static idbCreateDB() {
+    idb.open('restaurants-review', 1, function(upgradeDB) {
+      upgradeDB.createObjectStore('restaurants', {
+        keyPath: 'id'
+      });
+    });
+  }
+
+  static idbGetRestaurants() {
+    this.idbCreateDB();
+    return idb.open('restaurants-review', 1).then(function(db) {
+      if (!db.objectStoreNames.contains('restaurants')) {
+        // if store is not initialized skip reading
+        return;
+      }
+
+      var tx = db.transaction(['restaurants'], 'readonly');
+      var store = tx.objectStore('restaurants');
+      return store.getAll();
+    });
+  }
+
+  static idbSetRestaurants(restaurants) {
+    this.idbCreateDB();
+    return idb.open('restaurants-review', 1).then(function(db) {
+      if (!db.objectStoreNames.contains('restaurants')) {
+        // if store is not initialized skip updating
+        return;
+      }
+
+      var tx = db.transaction(['restaurants'], 'readwrite');
+      var store = tx.objectStore('restaurants');
+      return Promise.all(restaurants.map(function(restaurant) {
+        return store.add(restaurant);
+      })
+      ).catch(function(e) {
+        tx.abort();
+        console.log(e);
+      });
+    });
+  }
 }
