@@ -203,8 +203,8 @@ export default class DBHelper {
     return marker;
   }
 
-  static idbCreateDB() {
-    idb.open('restaurants-review', 1, function(upgradeDB) {
+  static idbGetDB() {
+    return idb.open('restaurants-review', 1, function(upgradeDB) {
       upgradeDB.createObjectStore('restaurants', {
         keyPath: 'id'
       });
@@ -212,8 +212,7 @@ export default class DBHelper {
   }
 
   static idbGetRestaurants() {
-    this.idbCreateDB();
-    return idb.open('restaurants-review', 1).then(function(db) {
+    return this.idbGetDB().then(function(db) {
       if (!db.objectStoreNames.contains('restaurants')) {
         // if store is not initialized skip reading
         return;
@@ -226,8 +225,7 @@ export default class DBHelper {
   }
 
   static idbSetRestaurants(restaurants) {
-    this.idbCreateDB();
-    return idb.open('restaurants-review', 1).then(function(db) {
+    return DBHelper.idbGetDB().then(function(db) {
       if (!db.objectStoreNames.contains('restaurants')) {
         // if store is not initialized skip updating
         return;
