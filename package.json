@@ -29,6 +29,7 @@
     "gulp-sass": "^4.0.1",
     "gulp-sourcemap": "^1.0.1",
     "gulp-uglify": "^3.0.0",
+    "gulp-webserver": "^0.9.1",
     "rollup-plugin-babel": "^3.0.7",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"

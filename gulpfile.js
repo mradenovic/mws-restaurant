@@ -8,6 +8,7 @@ var browserSync = require('browser-sync').create();
 var eslint = require('gulp-eslint');
 var browserify = require('gulp-browserify');
 var uglify = require('gulp-uglify');
+var webserver = require('gulp-webserver');
 
 gulp.task('default', ['copy'], function () {
   gulp.watch('src/**/*.*', ['reload']);
@@ -69,4 +70,9 @@ gulp.task('copy', ['manifest', 'img', 'html', 'sass', 'js']);
 gulp.task('reload', ['copy'], function (done) {
   browserSync.reload();
   done();
+});
+
+gulp.task('serve', ['copy'], function() {
+  gulp.src('dist')
+    .pipe(webserver());
 });
