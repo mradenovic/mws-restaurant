@@ -213,11 +213,6 @@ export default class DBHelper {
 
   static idbGetRestaurants() {
     return this.idbGetDB().then(function(db) {
-      if (!db.objectStoreNames.contains('restaurants')) {
-        // if store is not initialized skip reading
-        return;
-      }
-
       var tx = db.transaction(['restaurants'], 'readonly');
       var store = tx.objectStore('restaurants');
       return store.getAll();
@@ -226,11 +221,6 @@ export default class DBHelper {
 
   static idbSetRestaurants(restaurants) {
     return DBHelper.idbGetDB().then(function(db) {
-      if (!db.objectStoreNames.contains('restaurants')) {
-        // if store is not initialized skip updating
-        return;
-      }
-
       var tx = db.transaction(['restaurants'], 'readwrite');
       var store = tx.objectStore('restaurants');
       return Promise.all(restaurants.map(function(restaurant) {
