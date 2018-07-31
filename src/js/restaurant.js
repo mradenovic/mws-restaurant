@@ -46,6 +46,10 @@ class RestaurantController {
           return;
         }
         controller.fillRestaurantHTML(restaurant);
+        fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`)
+          .then(response => response.json())
+          .then(reviews => controller.fillReviewsHTML(reviews));
+
         callback(null, restaurant);
       });
     }
@@ -73,8 +77,6 @@ class RestaurantController {
     if (restaurant.operating_hours) {
       this.fillRestaurantHoursHTML(restaurant);
     }
-    // fill reviews
-    this.fillReviewsHTML(restaurant);
   }
 
   /**
@@ -102,8 +104,7 @@ class RestaurantController {
   /**
    * Create all reviews HTML and add them to the webpage.
    */
-  fillReviewsHTML(restaurant) {
-    let reviews = restaurant.reviews;
+  fillReviewsHTML(reviews) {
     const container = document.getElementById('reviews-container');
     const title = document.createElement('h2');
     title.innerHTML = 'Reviews';
