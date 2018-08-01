@@ -302,17 +302,19 @@ export class DBService {
    * @param {Object} reviews 
    */
   idbPostReviews(reviews) {
-    return this.db.then(db => {
-      var tx = db.transaction(['reviews'], 'readwrite');
-      var store = tx.objectStore('reviews');
-      return Promise.all(reviews.map(review => {
-        return store.add(review);
+    return this.db
+      .then(db => {
+        var tx = db.transaction(['reviews'], 'readwrite');
+        var store = tx.objectStore('reviews');
+        return Promise.all(reviews.map(review => {
+          return store.add(review);
+        })
+        ).catch(function(e) {
+          tx.abort();
+          console.log(e);
+        });
       })
-      ).catch(function(e) {
-        tx.abort();
-        console.log(e);
-      }).then(() => reviews);
-    });
+      .then(() => reviews);
   }
 
   /**
