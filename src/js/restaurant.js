@@ -1,9 +1,21 @@
 import './utils/register-sw';
-import DBHelper from './utils/dbhelper.js';
+import DBHelper, { DBService } from './utils/dbhelper.js';
 import GoogleMapsLoader from 'google-maps';
 GoogleMapsLoader.KEY = 'AIzaSyDaNOX7XbtJ6LTgCHIVtxoC2VFGukikTf8';
 
 class RestaurantController {
+
+  constructor() {
+    this.db = new DBService();
+    this.id = this.getParameterByName('id');
+  }
+
+  init() {
+    const {db, id} = this;
+
+    db.getReviews(id)
+      .then(reviews => this.fillReviewsHTML(reviews));
+  }
 
   /**
    * Initialize Google map, called from HTML.
@@ -46,9 +58,9 @@ class RestaurantController {
           return;
         }
         controller.fillRestaurantHTML(restaurant);
-        fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`)
-          .then(response => response.json())
-          .then(reviews => controller.fillReviewsHTML(reviews));
+        // fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`)
+        //   .then(response => response.json())
+        //   .then(reviews => controller.fillReviewsHTML(reviews));
 
         callback(null, restaurant);
       });
@@ -191,5 +203,6 @@ class RestaurantController {
 
 document.addEventListener('DOMContentLoaded', () => {
   let restaurantControler = new RestaurantController();
+  restaurantControler.init();
   GoogleMapsLoader.load(google => restaurantControler.initMap(google));
 });

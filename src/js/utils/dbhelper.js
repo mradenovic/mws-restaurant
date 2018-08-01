@@ -232,4 +232,40 @@ export default class DBHelper {
       });
     });
   }
+
+}
+
+/** Databse Service
+ * 
+ * Helper class to handle database operations
+ */
+export class DBService {
+
+  /**
+   * Handle fetch errors
+   * 
+   * If there is an error, throws an error, otherwise
+   * returns response.
+   * 
+   * https://www.tjvantoll.com/2015/09/13/fetch-and-errors/
+   * 
+   * @param {Prommise} response 
+   */
+  handleFetchError(response) {
+    if (!response.ok) {
+      throw Error(response.status.text);
+    }
+    return response;
+  }
+
+  /**
+   * Gets reviews for the restaurant
+   * 
+   * @param {String} id 
+   */
+  getReviews(id) {
+    return fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`)
+      .then(response => this.handleFetchError(response))
+      .then(response => response.json());
+  }
 }
