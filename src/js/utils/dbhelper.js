@@ -297,6 +297,25 @@ export class DBService {
   }
 
   /**
+   * Post reviews for the restaurant into IndexedDB
+   * 
+   * @param {Object} reviews 
+   */
+  idbPostReviews(reviews) {
+    return this.db.then(db => {
+      var tx = db.transaction(['reviews'], 'readwrite');
+      var store = tx.objectStore('reviews');
+      return Promise.all(reviews.map(review => {
+        return store.add(review);
+      })
+      ).catch(function(e) {
+        tx.abort();
+        console.log(e);
+      }).then(() => reviews);
+    });
+  }
+
+  /**
    * Gets reviews for the restaurant
    * 
    * @param {String} id 
@@ -307,7 +326,8 @@ export class DBService {
         if (reviews && reviews.length > 0) {
           return reviews;
         } else {
-          return this.remoteGetReviews(id);
+          return this.remoteGetReviews(id)
+            .then(reviews => this.idbPostReviews(reviews));
         }
       });
   }
