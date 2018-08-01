@@ -241,6 +241,30 @@ export default class DBHelper {
  */
 export class DBService {
 
+  constructor() {
+    this.db = this.idbGetDB();
+  }
+
+  idbGetDB() {
+    return idb.open('restaurant-reviews', 2, upgradeDB => {
+      // Note: we don't use 'break' in this switch statement,
+      // the fall-through behaviour is what we want.
+      switch (upgradeDB.oldVersion) {
+        case 0:
+          upgradeDB.createObjectStore('restaurants', {
+            keyPath: 'id'
+          });
+          // eslint-disable-line no-fallthrough
+        case 1: {
+          const reviews = upgradeDB.createObjectStore('reviews', {
+            keyPath: 'id'
+          });
+          reviews.createIndex('restaurant', 'restaurant_id', {unique: false});
+        }
+      }
+    });   
+  }
+
   /**
    * Handle fetch errors
    * 
@@ -258,14 +282,30 @@ export class DBService {
     return response;
   }
 
+  idbGetReviews(id) {
+    return this.db.then(function(db) {
+      let tx = db.transaction(['reviews'], 'readonly');
+      let store = tx.objectStore('reviews');
+      let index = store.index('restaurant');
+      return index.getAll(IDBKeyRange.only(id));
+    });
+  }
+
   /**
    * Gets reviews for the restaurant
    * 
    * @param {String} id 
    */
   getReviews(id) {
-    return fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`)
-      .then(response => this.handleFetchError(response))
-      .then(response => response.json());
+    return this.idbGetReviews(id)
+      .then(reviews => {
+        if (reviews && reviews.length > 0) {
+          return reviews;
+        } else {
+          return fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`)
+            .then(response => this.handleFetchError(response))
+            .then(response => response.json());
+        }
+      });
   }
 }
