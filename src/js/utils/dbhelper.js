@@ -282,6 +282,11 @@ export class DBService {
     return response;
   }
 
+  /**
+   * Get reviews for the restaurant from IndexedDB
+   * 
+   * @param {String} id 
+   */
   idbGetReviews(id) {
     return this.db.then(function(db) {
       let tx = db.transaction(['reviews'], 'readonly');
@@ -302,10 +307,19 @@ export class DBService {
         if (reviews && reviews.length > 0) {
           return reviews;
         } else {
-          return fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`)
-            .then(response => this.handleFetchError(response))
-            .then(response => response.json());
+          return this.remoteGetReviews(id);
         }
       });
+  }
+
+  /**
+   * Fetch reviews for the restaurant from a remote server
+   * 
+   * @param {String} id 
+   */
+  remoteGetReviews(id) {
+    return fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`)
+      .then(response => this.handleFetchError(response))
+      .then(response => response.json());
   }
 }
