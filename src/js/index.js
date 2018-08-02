@@ -1,10 +1,11 @@
 import './utils/register-sw';
-import DBHelper from './utils/dbhelper.js';
+import DBHelper, {DBService} from './utils/dbhelper.js';
 import GoogleMapsLoader from 'google-maps';
 GoogleMapsLoader.KEY = 'AIzaSyDaNOX7XbtJ6LTgCHIVtxoC2VFGukikTf8';
 
 class IndexController {
   constructor() {
+    this.db = new DBService();
     this.markers = [];
 
     const cuisine = document.getElementById('cuisines-select');
@@ -12,21 +13,15 @@ class IndexController {
     cuisine.addEventListener('change', () => this.updateRestaurants());
     neighborhoods.addEventListener('change', () => this.updateRestaurants());
   }
-  
-  /**
-   * Fetch all neighborhoods and set their HTML.
-   */
-  fetchNeighborhoods() {
-    DBHelper.fetchNeighborhoods((error, neighborhoods) => {
-      if (error) { // Got an error
-        console.error(error);
-      } else {
-        this.neighborhoods = neighborhoods;
-        this.fillNeighborhoodsHTML();
-      }
-    });
-  }
 
+  init() {
+    this.db.getCuisines()
+      .then(cuisines => this.fillCuisinesHTML(cuisines));
+    this.db.getNeighborhoods()
+      .then(neighborhoods => this.fillNeighborhoodsHTML(neighborhoods));
+  }
+  
+  
   /**
    * Set neighborhoods HTML.
    */
@@ -37,20 +32,6 @@ class IndexController {
       option.innerHTML = neighborhood;
       option.value = neighborhood;
       select.append(option);
-    });
-  }
-
-  /**
-   * Fetch all cuisines and set their HTML.
-   */
-  fetchCuisines() {
-    DBHelper.fetchCuisines((error, cuisines) => {
-      if (error) { // Got an error!
-        console.error(error);
-      } else {
-        this.cuisines = cuisines;
-        this.fillCuisinesHTML();
-      }
     });
   }
 
@@ -191,7 +172,6 @@ class IndexController {
  */
 document.addEventListener('DOMContentLoaded', () => {
   let indexControler = new IndexController();
-  indexControler.fetchNeighborhoods();
-  indexControler.fetchCuisines();
+  indexControler.init();
   GoogleMapsLoader.load(google => indexControler.initMap(google));
 });
