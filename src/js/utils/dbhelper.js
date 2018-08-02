@@ -151,7 +151,7 @@ export class DBService {
       let tx = db.transaction([objectStoreName], 'readonly');
       let store = tx.objectStore(objectStoreName);
       if (indexName && indexValue) {
-        let index = store.index( indexName);
+        let index = store.index(indexName);
         return index.getAll(IDBKeyRange.only(Number(indexValue)));
       } else {
         return store.getAll();
