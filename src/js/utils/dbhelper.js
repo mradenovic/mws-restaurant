@@ -291,11 +291,29 @@ export class DBService {
    * @param {String} id 
    */
   idbGetReviews(id) {
+    return this.idbGetRecords('reviews', 'restaurant', id);
+  }
+
+  /**
+   * Get records from IndexedDB
+   * 
+   * If indexName and indexValue are provided, filtered result will be returned.
+   * Otherwise, all records will be returned.
+   * 
+   * @param {string} objectStoreName - The name of the object store.
+   * @param {string} indexName - The name of the index.
+   * @param {string} indexValue - The index value.
+   */
+  idbGetRecords(objectStoreName, indexName, indexValue) {
     return this.db.then(function(db) {
-      let tx = db.transaction(['reviews'], 'readonly');
-      let store = tx.objectStore('reviews');
-      let index = store.index('restaurant');
-      return index.getAll(IDBKeyRange.only(id));
+      let tx = db.transaction([objectStoreName], 'readonly');
+      let store = tx.objectStore(objectStoreName);
+      if (indexName && indexValue) {
+        let index = store.index( indexName);
+        return index.getAll(IDBKeyRange.only(indexValue));
+      } else {
+        return store.getAll();
+      }
     });
   }
 
