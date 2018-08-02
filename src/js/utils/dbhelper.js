@@ -242,6 +242,9 @@ export default class DBHelper {
 export class DBService {
 
   constructor() {
+    const HOST = 'http://localhost';
+    const PORT = '1337';
+    this.DB_URL = `${HOST}:${PORT}`;
     this.db = this.idbGetDB();
   }
 
@@ -351,7 +354,8 @@ export class DBService {
    * @param {String} id 
    */
   remoteGetReviews(id) {
-    return fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`)
+    const {DB_URL} = this;
+    return fetch(`${DB_URL}/reviews/?restaurant_id=${id}`)
       .then(response => this.handleFetchError(response))
       .then(response => response.json());
   }
