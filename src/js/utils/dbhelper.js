@@ -415,7 +415,6 @@ export class DBService {
   /**
    * Fetch reviews for the restaurant from a remote server
    * 
-   * @param {String} id 
    */
   remoteGetRestaurants() {
     const {DB_URL} = this;
