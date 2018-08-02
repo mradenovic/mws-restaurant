@@ -311,6 +311,15 @@ export class DBService {
       .then(restaurants => this.getUniqueValues(restaurants, 'cuisine_type'));
   }
 
+  /**
+   * Get neighborhoods
+   * 
+   */
+  getNeighborhoods() {
+    return this.getRestaurants()
+      .then(restaurants => this.getUniqueValues(restaurants, 'neighborhood'));
+  }
+
   /** Get unique values from records for a given filed
    * 
    * @param {Object[]} records
