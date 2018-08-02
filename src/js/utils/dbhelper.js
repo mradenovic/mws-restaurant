@@ -305,6 +305,7 @@ export class DBService {
   /**
    * Get cuisines
    * 
+   * @returns {string[]} Unique cuisines.
    */
   getCuisines() {
     return this.getRestaurants()
@@ -314,6 +315,7 @@ export class DBService {
   /**
    * Get neighborhoods
    * 
+   * @returns {string[]} Unique neighborhoods.
    */
   getNeighborhoods() {
     return this.getRestaurants()
