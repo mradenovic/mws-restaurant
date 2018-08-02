@@ -15,21 +15,24 @@ class RestaurantController {
 
     db.getReviews(id)
       .then(reviews => this.fillReviewsHTML(reviews));
+    this.fetchRestaurantFromURL()
+      .then(restaurant => {
+        this.fillBreadcrumb(restaurant);
+        this.fillRestaurantHTML(restaurant);
+        GoogleMapsLoader.load(google => this.initMap(google, restaurant));
+      });
   }
 
   /**
    * Initialize Google map, called from HTML.
    */
-  initMap(google) {
-    this.fetchRestaurantFromURL().then((restaurant) => {
-      this.map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 16,
-        center: restaurant.latlng,
-        scrollwheel: false
-      });
-      this.fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(google, restaurant, this.map);
+  initMap(google, restaurant) {
+    this.map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 16,
+      center: restaurant.latlng,
+      scrollwheel: false
     });
+    DBHelper.mapMarkerForRestaurant(google, restaurant, this.map);
   }
 
   /**
@@ -192,5 +195,4 @@ class RestaurantController {
 document.addEventListener('DOMContentLoaded', () => {
   let restaurantControler = new RestaurantController();
   restaurantControler.init();
-  GoogleMapsLoader.load(google => restaurantControler.initMap(google));
 });
