@@ -407,9 +407,7 @@ export class DBService {
    */
   remoteGetReviews(id) {
     const {DB_URL} = this;
-    return fetch(`${DB_URL}/reviews/?restaurant_id=${id}`)
-      .then(response => this.handleFetchError(response))
-      .then(response => response.json());
+    return this.remoteGetRecords(`${DB_URL}/reviews/?restaurant_id=${id}`)
   }
 
   /**
@@ -418,7 +416,11 @@ export class DBService {
    */
   remoteGetRestaurants() {
     const {DB_URL} = this;
-    return fetch(`${DB_URL}/restaurants`)
+    return this.remoteGetRecords(`${DB_URL}/restaurants`)
+  }
+
+  remoteGetRecords(url) {
+    return fetch(url)
       .then(response => this.handleFetchError(response))
       .then(response => response.json());
   }
