@@ -283,9 +283,9 @@ export class DBService {
   }
 
   /**
-   * Gets restaurants for the restaurant
+   * Gets restaurants
    * 
-   * @param {String} id 
+   * @return {Object[]}
    */
   getRestaurants() {
     return this.idbGetRestaurants()
@@ -322,7 +322,8 @@ export class DBService {
   /**
    * Fetch reviews for the restaurant from a remote server
    * 
-   * @param {String} id 
+   * @param {String} id restaurant id
+   * @returns {Object[]}  
    */
   remoteGetReviews(id) {
     const {DB_URL} = this;
@@ -330,14 +331,21 @@ export class DBService {
   }
 
   /**
-   * Fetch reviews for the restaurant from a remote server
+   * Fetch restaurants from a remote server
    * 
+   * @returns {Object[]}  
    */
   remoteGetRestaurants() {
     const {DB_URL} = this;
     return this.remoteGetRecords(`${DB_URL}/restaurants`);
   }
 
+  /**
+   * Fetch array of objects from a remote server
+   *
+   * @param {stirng} url  
+   * @returns {Object[]}  
+   */
   remoteGetRecords(url) {
     return fetch(url)
       .then(response => this.handleFetchError(response))
