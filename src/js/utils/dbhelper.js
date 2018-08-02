@@ -71,74 +71,6 @@ export default class DBHelper {
   }
 
   /**
-   * Fetch restaurants by a cuisine type with proper error handling.
-   */
-  static fetchRestaurantByCuisine(cuisine, callback) {
-    // fetch restaurants by cuisine
-    let url = DBHelper.DATABASE_URL;
-    if (cuisine != 'all') {
-      url += `?cuisine_type=${cuisine}`;
-    }
-    fetch(url)
-      .then(DBHelper.getData)
-      .then(restaurants => {
-        callback(null, restaurants);
-      })
-      .catch(error => {
-        callback(error, null);
-      });
-  }
-
-  /**
-   * Fetch restaurants by a neighborhood with proper error handling.
-   */
-  static fetchRestaurantByNeighborhood(neighborhood, callback) {
-    // fetch restaurants by neighborhood
-    let url = DBHelper.DATABASE_URL;
-    if (neighborhood != 'all') {
-      url += `?neighborhood=${neighborhood}`;
-    }
-    fetch(url)
-      .then(DBHelper.getData)
-      .then(restaurants => {
-        callback(null, restaurants);
-      })
-      .catch(error => {
-        callback(error, null);
-      });
-  }
-
-  /**
-   * Fetch restaurants by a cuisine and a neighborhood with proper error handling.
-   */
-  static fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, callback) {
-    // fetch restaurants by cuisine and neighborhood
-    let url = DBHelper.DATABASE_URL;
-    url += '?';
-
-    // Add filter only if it is different from default
-    if (cuisine != 'all') {
-      url += `cuisine_type=${cuisine}`;
-    }
-    
-    if (neighborhood != 'all') {
-      if (cuisine != 'all') {
-        url += '&';
-      }
-      url += `neighborhood=${neighborhood}`;
-    }
-
-    fetch(url)
-      .then(DBHelper.getData)
-      .then(restaurants => {
-        callback(null, restaurants);
-      })
-      .catch(error => {
-        callback(error, null);
-      });
-  }
-
-  /**
    * Restaurant page URL.
    */
   static urlForRestaurant(restaurant) {
@@ -165,36 +97,6 @@ export default class DBHelper {
       animation: google.maps.Animation.DROP}
     );
     return marker;
-  }
-
-  static idbGetDB() {
-    return idb.open('restaurants-review', 1, function(upgradeDB) {
-      upgradeDB.createObjectStore('restaurants', {
-        keyPath: 'id'
-      });
-    });
-  }
-
-  static idbGetRestaurants() {
-    return this.idbGetDB().then(function(db) {
-      var tx = db.transaction(['restaurants'], 'readonly');
-      var store = tx.objectStore('restaurants');
-      return store.getAll();
-    });
-  }
-
-  static idbSetRestaurants(restaurants) {
-    return DBHelper.idbGetDB().then(function(db) {
-      var tx = db.transaction(['restaurants'], 'readwrite');
-      var store = tx.objectStore('restaurants');
-      return Promise.all(restaurants.map(function(restaurant) {
-        return store.add(restaurant);
-      })
-      ).catch(function(e) {
-        tx.abort();
-        console.log(e);
-      });
-    });
   }
 
 }
@@ -394,6 +296,26 @@ export class DBService {
           return this.remoteGetRestaurants()
             .then(restaurants => this.idbPostRestaurants(restaurants));
         }
+      });
+  }
+
+  /**
+   * Gets filtered restaurants
+   * 
+   * @param {String} cuisine
+   * @param {String} neighborhood
+   * @return {Object[]}
+   */
+  getFilteredResaurants (cuisine, neighborhood ) {
+    return this.getRestaurants()
+      .then(restaurants => {
+        if (cuisine!= 'all') {
+          restaurants = restaurants.filter(restaurant => restaurant.cuisine_type == cuisine);
+        }
+        if (neighborhood!= 'all') {
+          restaurants = restaurants.filter(restaurant => restaurant.neighborhood == neighborhood);
+        }
+        return restaurants;
       });
   }
 
