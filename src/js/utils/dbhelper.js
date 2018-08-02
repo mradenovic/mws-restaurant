@@ -295,6 +295,14 @@ export class DBService {
   }
 
   /**
+   * Get restaurants from IndexedDB
+   * 
+   */
+  idbGetRestaurants() {
+    return this.idbGetRecords('restaurants');
+  }
+
+  /**
    * Get records from IndexedDB
    * 
    * If indexName and indexValue are provided, filtered result will be returned.
@@ -324,6 +332,15 @@ export class DBService {
    */
   idbPostReviews(reviews) {
     return this.idbPostRecords('reviews', reviews);
+  }
+
+  /**
+   * Store reviews into IndexedDB
+   * 
+   * @param {Object[]} reviews - The reviews to be stored.
+   */
+  idbPostRestaurants(restaurants) {
+    return this.idbPostRecords('restaurants', restaurants);
   }
 
   /**
@@ -367,6 +384,23 @@ export class DBService {
   }
 
   /**
+   * Gets restaurants for the restaurant
+   * 
+   * @param {String} id 
+   */
+  getRestaurants() {
+    return this.idbGetRestaurants()
+      .then(restaurants => {
+        if (restaurants && restaurants.length > 0) {
+          return restaurants;
+        } else {
+          return this.remoteGetRestaurants()
+            .then(restaurants => this.idbPostRestaurants(restaurants));
+        }
+      });
+  }
+
+  /**
    * Fetch reviews for the restaurant from a remote server
    * 
    * @param {String} id 
@@ -377,4 +411,17 @@ export class DBService {
       .then(response => this.handleFetchError(response))
       .then(response => response.json());
   }
+
+  /**
+   * Fetch reviews for the restaurant from a remote server
+   * 
+   * @param {String} id 
+   */
+  remoteGetRestaurants() {
+    const {DB_URL} = this;
+    return fetch(`${DB_URL}/restaurants`)
+      .then(response => this.handleFetchError(response))
+      .then(response => response.json());
+  }
+
 }
