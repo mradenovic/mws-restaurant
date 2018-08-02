@@ -303,6 +303,28 @@ export class DBService {
   }
 
   /**
+   * Get cuisines
+   * 
+   */
+  getCuisines() {
+    return this.getRestaurants()
+      .then(restaurants => this.getUniqueValues(restaurants, 'cuisine_type'));
+  }
+
+  /** Get unique values from records for a given filed
+   * 
+   * @param {Object[]} records
+   * @returns {string[]} Unique values.
+   */
+  getUniqueValues(records, fieldName) {
+    // Get all cuisines from all restaurants
+    const values = records.map((record) => record[fieldName]);
+    // Remove duplicates from cuisines
+    const uniqueValues = values.filter((v, i) => values.indexOf(v) == i);
+    return uniqueValues;
+  }
+
+  /**
    * Get records from IndexedDB
    * 
    * If indexName and indexValue are provided, filtered result will be returned.
@@ -407,7 +429,7 @@ export class DBService {
    */
   remoteGetReviews(id) {
     const {DB_URL} = this;
-    return this.remoteGetRecords(`${DB_URL}/reviews/?restaurant_id=${id}`)
+    return this.remoteGetRecords(`${DB_URL}/reviews/?restaurant_id=${id}`);
   }
 
   /**
@@ -416,7 +438,7 @@ export class DBService {
    */
   remoteGetRestaurants() {
     const {DB_URL} = this;
-    return this.remoteGetRecords(`${DB_URL}/restaurants`)
+    return this.remoteGetRecords(`${DB_URL}/restaurants`);
   }
 
   remoteGetRecords(url) {
