@@ -152,7 +152,7 @@ export class DBService {
       let store = tx.objectStore(objectStoreName);
       if (indexName && indexValue) {
         let index = store.index( indexName);
-        return index.getAll(IDBKeyRange.only(indexValue));
+        return index.getAll(IDBKeyRange.only(Number(indexValue)));
       } else {
         return store.getAll();
       }
