@@ -297,24 +297,35 @@ export class DBService {
   }
 
   /**
-   * Post reviews for the restaurant into IndexedDB
+   * Store reviews into IndexedDB
    * 
-   * @param {Object} reviews 
+   * @param {Object[]} reviews - The reviews to be stored.
    */
   idbPostReviews(reviews) {
+    return this.idbPostRecords('reviews', reviews);
+  }
+
+  /**
+   * Store records into IndexedDB
+   * 
+   * @param {string} objectStoreName - The name of the object store.
+   * @param {Object[]} records - The records to be stored. 
+   */
+  idbPostRecords(objectStoreName, records) {
     return this.db
       .then(db => {
-        var tx = db.transaction(['reviews'], 'readwrite');
-        var store = tx.objectStore('reviews');
-        return Promise.all(reviews.map(review => {
-          return store.add(review);
+        var tx = db.transaction([objectStoreName], 'readwrite');
+        var store = tx.objectStore(objectStoreName);
+        return Promise.all(records.map(record => {
+          return store.add(record);
         })
         ).catch(function(e) {
           tx.abort();
           console.log(e);
         });
       })
-      .then(() => reviews);
+      // return records Promise
+      .then(() => records);
   }
 
   /**
