@@ -21,49 +21,37 @@ class RestaurantController {
    * Initialize Google map, called from HTML.
    */
   initMap(google) {
-    this.fetchRestaurantFromURL((error, restaurant) => {
-      if (error) { // Got an error!
-        console.error(error);
-      } else {
-        this.map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 16,
-          center: restaurant.latlng,
-          scrollwheel: false
-        });
-        this.fillBreadcrumb();
-        DBHelper.mapMarkerForRestaurant(google, this.restaurant, this.map);
-      }
+    this.fetchRestaurantFromURL().then((restaurant) => {
+      this.map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 16,
+        center: restaurant.latlng,
+        scrollwheel: false
+      });
+      this.fillBreadcrumb();
+      DBHelper.mapMarkerForRestaurant(google, restaurant, this.map);
     });
   }
 
   /**
    * Get current restaurant from page URL.
    */
-  fetchRestaurantFromURL(callback) {
+  fetchRestaurantFromURL() {
     if (this.restaurant) { // restaurant already fetched!
-      callback(null, this.restaurant);
-      return;
+      return this.restaurant;
     }
 
     const id = this.getParameterByName('id');
     if (!id) { // no id found in URL
-      let error = 'No restaurant id in URL';
-      callback(error, null);
+      throw 'No restaurant id in URL';
     } else {
       let controller = this;
-      DBHelper.fetchRestaurantById(id, function hello(error, restaurant) {
-        controller.restaurant = restaurant;
-        if (!restaurant) {
-          console.error(error);
-          return;
-        }
-        controller.fillRestaurantHTML(restaurant);
-        // fetch(`http://localhost:1337/reviews/?restaurant_id=${id}`)
-        //   .then(response => response.json())
-        //   .then(reviews => controller.fillReviewsHTML(reviews));
-
-        callback(null, restaurant);
-      });
+      return this.db.getRestaurant(id)
+        .then(restaurant => {
+          controller.restaurant = restaurant;
+          controller.fillRestaurantHTML(restaurant);
+          return restaurant;
+        })
+        .catch(error => console.error(error));
     }
   }
 

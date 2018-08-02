@@ -6,71 +6,6 @@ import idb from 'idb';
 export default class DBHelper {
 
   /**
-   * Database URL.
-   * Change this to restaurants.json file location on your server.
-   */
-  static get DATABASE_URL() {
-    const port = 1337; // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
-  }
-
-  /**
-   * Handle fetch errors
-   * 
-   * https://www.tjvantoll.com/2015/09/13/fetch-and-errors/
-   * 
-   * @param {Prommise} response 
-   */
-  static getData(response) {
-    if (!response.ok) {
-      throw Error(response.status.text);
-    }
-    return response.json();
-  }
-
-  /**
-   * Fetch all restaurants.
-   */
-  static fetchRestaurants(callback) {
-    // check idb for restaurants
-    this.idbGetRestaurants()
-      .then(restaurants => {
-        if (restaurants && restaurants.length > 0) {
-          callback(null, restaurants);
-        } else {
-          // fetch restaurants
-          fetch(DBHelper.DATABASE_URL)
-            .then(DBHelper.getData)
-            .then(restaurants => {
-              this.idbSetRestaurants(restaurants);
-              callback(null, restaurants);
-            })
-            .catch(error => {
-              callback(error, null);
-            });
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
-
-  /**
-   * Fetch a restaurant by its ID.
-   */
-  static fetchRestaurantById(id, callback) {
-    // fetch restaurant
-    fetch(`http://localhost:1337/restaurants?id=${id}`)
-      .then(DBHelper.getData)
-      .then(restaurant => {
-        callback(null, restaurant);
-      })
-      .catch(error => {
-        callback(error, null);
-      });
-  }
-
-  /**
    * Restaurant page URL.
    */
   static urlForRestaurant(restaurant) {
@@ -297,6 +232,17 @@ export class DBService {
             .then(restaurants => this.idbPostRestaurants(restaurants));
         }
       });
+  }
+
+  /**
+   * Gets restaurant by id
+   * 
+   * @param {String} id
+   * @return {Object}
+   */
+  getRestaurant(id) {
+    return this.getRestaurants()
+      .then(restaurants => restaurants.find(r => r.id == id ));
   }
 
   /**
