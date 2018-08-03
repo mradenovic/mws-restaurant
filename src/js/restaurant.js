@@ -19,14 +19,13 @@ class RestaurantController {
       .then(restaurant => {
         this.fillBreadcrumb(restaurant);
         this.fillRestaurantHTML(restaurant);
-        GoogleMapsLoader.load(google => this.initMap(google, restaurant));
       });
   }
 
   /**
    * Initialize Google map, called from HTML.
    */
-  initMap(google, restaurant) {
+  initMap(google, restaurant = this.restaurant) {
     this.map = new google.maps.Map(document.getElementById('map'), {
       zoom: 16,
       center: restaurant.latlng,
@@ -195,4 +194,5 @@ class RestaurantController {
 document.addEventListener('DOMContentLoaded', () => {
   let restaurantControler = new RestaurantController();
   restaurantControler.init();
+  GoogleMapsLoader.load(google => restaurantControler.initMap(google));
 });
