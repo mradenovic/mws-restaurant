@@ -1,5 +1,5 @@
 import './utils/register-sw';
-import DBHelper, {DBService} from './utils/dbhelper.js';
+import DBService from './utils/dbhelper.js';
 import MapService from './utils/map-helper.js';
 
 class IndexController {
@@ -103,12 +103,12 @@ class IndexController {
 
     const image = document.createElement('img');
     image.className = 'restaurant-img';
-    image.src = DBHelper.imageUrlForRestaurant(restaurant);
+    image.src = DBService.getImageUrl(restaurant);
     image.alt = restaurant.name + ' restaurant';
     li.append(image);
 
     const details = document.createElement('a');
-    details.href = DBHelper.urlForRestaurant(restaurant);
+    details.href = DBService.getUrl(restaurant);
     const name = document.createElement('h2');
     name.innerHTML = restaurant.name;
     details.append(name);
@@ -121,13 +121,6 @@ class IndexController {
     const address = document.createElement('p');
     address.innerHTML = restaurant.address;
     li.append(address);
-
-    // TODO: remove 'View Details' button
-    // keep the code until final decision is made
-    // const more = document.createElement('a');
-    // more.innerHTML = 'View Details';
-    // more.href = DBHelper.urlForRestaurant(restaurant);
-    // li.append(more)
 
     return li;
   }

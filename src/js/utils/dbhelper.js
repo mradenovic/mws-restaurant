@@ -1,31 +1,31 @@
 import idb from 'idb';
 
-/**
- * Common database helper functions.
- */
-export default class DBHelper {
-
-  /**
-   * Restaurant page URL.
-   */
-  static urlForRestaurant(restaurant) {
-    return (`./restaurant.html?id=${restaurant.id}`);
-  }
-
-  /**
-   * Restaurant image URL.
-   */
-  static imageUrlForRestaurant(restaurant) {
-    let img = restaurant.photograph || restaurant.id;
-    return (`/img/${img}.webp`);
-  }
-}
-
 /** Databse Service
  * 
  * Helper class to handle database operations
  */
-export class DBService {
+export default class DBService {
+
+  /**
+   * Gets restaurant page url
+   * 
+   * @param {Object} restaurant
+   * @returns {string} restaurant page url.
+   */
+  static getUrl(restaurant) {
+    return (`./restaurant.html?id=${restaurant.id}`);
+  }
+
+  /**
+   * Gets restaurant image url
+   * 
+   * @param {Object} restaurant
+   * @returns {string} restaurant image url.
+   */
+  static getImageUrl(restaurant) {
+    let img = restaurant.photograph || restaurant.id;
+    return (`/img/${img}.webp`);
+  }
 
   constructor() {
     const HOST = 'http://localhost';

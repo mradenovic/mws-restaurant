@@ -1,5 +1,5 @@
 import './utils/register-sw';
-import DBHelper, { DBService } from './utils/dbhelper.js';
+import DBService from './utils/dbhelper.js';
 import MapService from './utils/map-helper.js';
 
 class RestaurantController {
@@ -59,7 +59,7 @@ class RestaurantController {
 
     const image = document.getElementById('restaurant-img');
     image.className = 'restaurant-img';
-    image.src = DBHelper.imageUrlForRestaurant(restaurant);
+    image.src = DBService.getImageUrl(restaurant);
     image.alt = restaurant.name + ' restaurant';
 
     const cuisine = document.getElementById('restaurant-cuisine');
