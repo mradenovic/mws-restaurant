@@ -138,7 +138,8 @@ class IndexController {
   addMarkersToMap(restaurants = this.restaurants) {
     restaurants.forEach(restaurant => {
       // Add marker to the map
-      const marker = MapService.createMarker(restaurant, this.map);
+      const marker = MapService.createMarker(restaurant, this.map)
+        .on('click', () => window.location.assign(`./restaurant.html?id=${restaurant.id}`));
       this.markers.push(marker);
     });
   }
