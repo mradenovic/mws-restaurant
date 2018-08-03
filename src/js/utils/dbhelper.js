@@ -17,7 +17,7 @@ export default class DBHelper {
    */
   static imageUrlForRestaurant(restaurant) {
     let img = restaurant.photograph || restaurant.id;
-    return (`/img/${img}.jpg`);
+    return (`/img/${img}.webp`);
   }
 
   /**
