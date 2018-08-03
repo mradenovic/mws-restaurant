@@ -19,7 +19,7 @@ class RestaurantController {
         this.fillBreadcrumb(restaurant);
         this.fillRestaurantHTML(restaurant);
         this.map = MapService.createMap('map', restaurant.latlng);
-        MapService.createMarker(restaurant, this.map);
+        MapService.createMarker(restaurant).addTo(this.map);
       });
   }
 

@@ -21,10 +21,10 @@ export default class MapService {
     return map;
   }
 
-  static createMarker(restaurant, map) {
+  static createMarker(restaurant) {
     let marker = new Marker(restaurant.latlng, {
       title: restaurant.name
-    }).addTo(map);
+    });
     return marker;
   }
 }
