@@ -1,7 +1,6 @@
 import './utils/register-sw';
 import DBHelper, {DBService} from './utils/dbhelper.js';
-import GoogleMapsLoader from 'google-maps';
-GoogleMapsLoader.KEY = 'AIzaSyDaNOX7XbtJ6LTgCHIVtxoC2VFGukikTf8';
+import MapService from './utils/map-helper.js';
 
 class IndexController {
   constructor() {
@@ -19,6 +18,7 @@ class IndexController {
       .then(cuisines => this.fillCuisinesHTML(cuisines));
     this.db.getNeighborhoods()
       .then(neighborhoods => this.fillNeighborhoodsHTML(neighborhoods));
+    this.initMap();
   }
   
   
@@ -79,7 +79,7 @@ class IndexController {
     ul.innerHTML = '';
 
     // Remove all map markers
-    this.markers.forEach(m => m.setMap(null));
+    this.markers.forEach(m => this.map.removeLayer(m));
     this.markers = [];
     this.restaurants = restaurants;
   }
@@ -138,10 +138,7 @@ class IndexController {
   addMarkersToMap(restaurants = this.restaurants) {
     restaurants.forEach(restaurant => {
       // Add marker to the map
-      const marker = DBHelper.mapMarkerForRestaurant(this.google, restaurant, this.map);
-      this.google.maps.event.addListener(marker, 'click', () => {
-        window.location.href = marker.url;
-      });
+      const marker = MapService.createMarker(restaurant, this.map);
       this.markers.push(marker);
     });
   }
@@ -149,17 +146,12 @@ class IndexController {
   /**
    * Initialize Google map.
    */
-  initMap(google) {
-    this.google = google;
+  initMap() {
     let loc = {
       lat: 40.722216,
       lng: -73.987501
     };
-    this.map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 12,
-      center: loc,
-      scrollwheel: false
-    });
+    this.map = MapService.createMap('map', loc);
     this.updateRestaurants();
   }
 }
@@ -170,5 +162,4 @@ class IndexController {
 document.addEventListener('DOMContentLoaded', () => {
   let indexControler = new IndexController();
   indexControler.init();
-  GoogleMapsLoader.load(google => indexControler.initMap(google));
 });
