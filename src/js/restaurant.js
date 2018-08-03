@@ -1,7 +1,6 @@
 import './utils/register-sw';
 import DBHelper, { DBService } from './utils/dbhelper.js';
-import GoogleMapsLoader from 'google-maps';
-GoogleMapsLoader.KEY = 'AIzaSyDaNOX7XbtJ6LTgCHIVtxoC2VFGukikTf8';
+import {Map, TileLayer, Marker} from 'leaflet';
 
 class RestaurantController {
 
@@ -19,6 +18,7 @@ class RestaurantController {
       .then(restaurant => {
         this.fillBreadcrumb(restaurant);
         this.fillRestaurantHTML(restaurant);
+        this.initMap();
       });
   }
 
@@ -26,12 +26,21 @@ class RestaurantController {
    * Initialize Google map, called from HTML.
    */
   initMap(google, restaurant = this.restaurant) {
-    this.map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 16,
-      center: restaurant.latlng,
-      scrollwheel: false
+    this.map = new Map('map', {
+      zoom: 18,
+      center: restaurant.latlng
     });
-    DBHelper.mapMarkerForRestaurant(google, restaurant, this.map);
+
+    new TileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      maxZoom: 13,
+      id: 'mapbox.streets',
+      accessToken: 'pk.eyJ1IjoibXJhZGVub3ZpYyIsImEiOiJjamtlM2J3ZzUwNXkwM2tydzVxMms0Y2ZsIn0.9ZoLEoZuLhpFrwoNubqhBA'
+    }).addTo(this.map);
+    
+    new Marker(restaurant.latlng, {
+      title: restaurant.name
+    }).addTo(this.map);
   }
 
   /**
@@ -194,5 +203,5 @@ class RestaurantController {
 document.addEventListener('DOMContentLoaded', () => {
   let restaurantControler = new RestaurantController();
   restaurantControler.init();
-  GoogleMapsLoader.load(google => restaurantControler.initMap(google));
+  // GoogleMapsLoader.load(google => restaurantControler.initMap(google));
 });
