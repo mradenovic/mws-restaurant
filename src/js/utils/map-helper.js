@@ -3,7 +3,7 @@ import {Map, TileLayer, Marker} from 'leaflet';
 export default class MapService {
   static createMap(mapId, mapCenter) {
     let map = new Map(mapId, {
-      zoom: 18,
+      zoom: 12,
       scrollWheelZoom: false,
       center: mapCenter
     });
