@@ -1,11 +1,11 @@
 import {Map, TileLayer, Marker} from 'leaflet';
 
 export default class MapService {
-  static createMap(restaurant) {
-    let map = new Map('map', {
+  static createMap(mapId, mapCenter) {
+    let map = new Map(mapId, {
       zoom: 18,
       scrollWheelZoom: false,
-      center: restaurant.latlng
+      center: mapCenter
     });
 
     const tileUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}';

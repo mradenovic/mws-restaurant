@@ -18,7 +18,7 @@ class RestaurantController {
       .then(restaurant => {
         this.fillBreadcrumb(restaurant);
         this.fillRestaurantHTML(restaurant);
-        this.map = MapService.createMap(restaurant);
+        this.map = MapService.createMap('map', restaurant.latlng);
         MapService.createMarker(restaurant, this.map);
       });
   }
