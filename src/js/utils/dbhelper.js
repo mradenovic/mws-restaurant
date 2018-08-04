@@ -132,7 +132,7 @@ export default class DBService {
    * @param {string} indexValue - The index value.
    */
   idbGetRecords(objectStoreName, indexName, indexValue) {
-    return this.db.then(function(db) {
+    return this.db.then(db => {
       let tx = db.transaction([objectStoreName], 'readonly');
       let store = tx.objectStore(objectStoreName);
       if (indexName && indexValue) {
@@ -176,7 +176,7 @@ export default class DBService {
         return Promise.all(records.map(record => {
           return store.add(record);
         })
-        ).catch(function(e) {
+        ).catch(e => {
           tx.abort();
           console.log(e);
         });
