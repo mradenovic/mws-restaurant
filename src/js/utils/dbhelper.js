@@ -91,21 +91,21 @@ export default class DBService {
   /**
    * Get cuisines
    * 
+   * @param {Object[]} restaurants
    * @returns {string[]} Unique cuisines.
    */
-  getCuisines() {
-    return this.getRestaurants()
-      .then(restaurants => this.getUniqueValues(restaurants, 'cuisine_type'));
+  getCuisines(restaurants) {
+    return this.getUniqueValues(restaurants, 'cuisine_type');
   }
 
   /**
    * Get neighborhoods
    * 
+   * @param {Object[]} restaurants
    * @returns {string[]} Unique neighborhoods.
    */
-  getNeighborhoods() {
-    return this.getRestaurants()
-      .then(restaurants => this.getUniqueValues(restaurants, 'neighborhood'));
+  getNeighborhoods(restaurants) {
+    return this.getUniqueValues(restaurants, 'neighborhood');
   }
 
   /** Get unique values from records for a given filed

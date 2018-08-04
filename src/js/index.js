@@ -6,22 +6,48 @@ class IndexController {
   constructor() {
     this.db = new DBService();
     this.markers = [];
+    this.restaurants = [];
 
     const cuisine = document.getElementById('cuisines-select');
     const neighborhoods = document.getElementById('neighborhoods-select');
-    cuisine.addEventListener('change', () => this.updateRestaurants());
-    neighborhoods.addEventListener('change', () => this.updateRestaurants());
+    cuisine.addEventListener('change', () => this.filterRestaurants());
+    neighborhoods.addEventListener('change', () => this.filterRestaurants());
   }
 
+  /**
+   * Initialize UI.
+   */
   init() {
-    this.db.getCuisines()
-      .then(cuisines => this.fillCuisinesHTML(cuisines));
-    this.db.getNeighborhoods()
-      .then(neighborhoods => this.fillNeighborhoodsHTML(neighborhoods));
     this.initMap();
+    this.db.getRestaurants()
+      // update all UI on initial load
+      .then(restaurants => this.updateAll(restaurants));
   }
   
+  /**
+   * Update all HTML.
+   */
+  updateAll(restaurants) {
+    this.updateFilters(restaurants);
+    this.updateRestaurants(restaurants);    
+  }
+
+  /**
+   * Update reastaurants HTML.
+   */
+  updateRestaurants(restaurants) {
+    this.resetRestaurants(restaurants);
+    this.fillRestaurantsHTML(restaurants);
+  }
   
+  /**
+   * Update filters HTML.
+   */
+  updateFilters(restaurants) {
+    this.fillCuisinesHTML(this.db.getCuisines(restaurants));
+    this.fillNeighborhoodsHTML(this.db.getNeighborhoods(restaurants));
+  }
+ 
   /**
    * Set neighborhoods HTML.
    */
@@ -52,7 +78,7 @@ class IndexController {
   /**
    * Update page and map for current restaurants.
    */
-  updateRestaurants() {
+  filterRestaurants() {
     const cSelect = document.getElementById('cuisines-select');
     const nSelect = document.getElementById('neighborhoods-select');
 
@@ -63,10 +89,7 @@ class IndexController {
     const neighborhood = nSelect[nIndex].value;
 
     this.db.getFilteredResaurants(cuisine, neighborhood)
-      .then(restaurants => {
-        this.resetRestaurants(restaurants);
-        this.fillRestaurantsHTML();
-      });
+      .then(restaurants => this.updateRestaurants(restaurants));
   }
 
   /**
@@ -147,7 +170,6 @@ class IndexController {
       lng: -73.987501
     };
     this.map = MapService.createMap('map', loc);
-    this.updateRestaurants();
   }
 }
 
