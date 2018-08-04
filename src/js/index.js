@@ -177,6 +177,5 @@ class IndexController {
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', () => {
-  let indexControler = new IndexController();
-  indexControler.init();
+  new IndexController().init();
 });
