@@ -145,7 +145,30 @@ class IndexController {
     address.innerHTML = restaurant.address;
     li.append(address);
 
+    const favorite = document.createElement('button');
+    let isFavorite = restaurant.is_favorite;
+    // closure over restaurant;
+    const putFavorite = () => {
+      this.putFavorite(restaurant, favorite);
+    };
+    favorite.innerHTML = this.getFavoriteHTML(isFavorite);
+    favorite.addEventListener('click', putFavorite);
+    li.append(favorite);
+
     return li;
+  }
+
+  putFavorite(restaurant, button) {
+    button.innerHTML = this.getFavoriteHTML(!restaurant.is_favorite);
+    restaurant.is_favorite = !restaurant.is_favorite;
+  }
+
+  getFavoriteHTML(isFavorite) {
+    if (isFavorite) {
+      return 'Remove favorite' ;
+    } else {
+      return 'Add favorite';
+    }
   }
 
   /**
