@@ -159,8 +159,10 @@ class IndexController {
   }
 
   putFavorite(restaurant, button) {
-    button.innerHTML = this.getFavoriteHTML(!restaurant.is_favorite);
     restaurant.is_favorite = !restaurant.is_favorite;
+    this.db.putFavorite(restaurant)
+      // Update UI after storing data
+      .then(button.innerHTML = this.getFavoriteHTML(restaurant.is_favorite));
   }
 
   getFavoriteHTML(isFavorite) {

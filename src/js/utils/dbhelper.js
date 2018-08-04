@@ -186,6 +186,27 @@ export default class DBService {
   }
 
   /**
+   * Store record into IndexedDB
+   * 
+   * @param {string} objectStoreName - The name of the object store.
+   * @param {Object} record - The record to be updated. 
+   */
+  idbPutRecord(objectStoreName, record) {
+    return this.db
+      .then(db => {
+        var tx = db.transaction([objectStoreName], 'readwrite');
+        var store = tx.objectStore(objectStoreName);
+        return store.put(record)
+          .catch(e => {
+            tx.abort();
+            console.log(e);
+          });
+      })
+      // return records Promise
+      .then(() => record);
+  }
+
+  /**
    * Gets reviews for the restaurant
    * 
    * @param {String} id 
@@ -228,6 +249,11 @@ export default class DBService {
   getRestaurant(id) {
     return this.getRestaurants()
       .then(restaurants => restaurants.find(r => r.id == id ));
+  }
+
+  putFavorite(restaurant) {
+    return this.idbPutRecord('restaurants', restaurant)
+      .then(console.log('restaurant favourite status updated'));
   }
 
   /**
