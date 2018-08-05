@@ -27,6 +27,16 @@ export default class DBService {
     return (`/img/${img}.webp`);
   }
 
+  getRegistration() {
+    return new Promise((resolve, reject) => {
+      if ('serviceWorker' in navigator && 'SyncManager' in window) {
+        resolve(navigator.serviceWorker.ready);
+      } else {
+        reject('Sync not suported');
+      }
+    });
+  }
+
   constructor() {
     const HOST = 'http://localhost';
     const PORT = '1337';
@@ -253,7 +263,26 @@ export default class DBService {
 
   putFavorite(restaurant) {
     return this.idbPutRecord('restaurants', restaurant)
-      .then(console.log('restaurant favourite status updated'));
+      .then(() => this.syncPutFavorite(restaurant));
+  }
+
+  syncPutFavorite(restaurant) {
+    const {id, is_favorite} = restaurant;
+    const {DB_URL} = this;
+    const PATH = `/restaurants/${id}/?is_favorite=${is_favorite}`;
+    const putUrl = `${DB_URL}${PATH}`;
+    return this.getRegistration()
+      .then(reg => {
+        return reg.sync.register(`PUT@${putUrl}`);
+      })
+      .catch(e => {
+        console.log('Syncing error;', e);
+        this.fetchPutFavorite(putUrl);
+      });
+  }
+
+  remotePutFavorite(url) {
+    return fetch(url, {method: 'PUT'});
   }
 
   /**
