@@ -85,6 +85,25 @@
         </li> -->
       </ul>
     </section>
+
+    <section id="review-form" class="review-form">
+      <h2>Post review</h2>
+      <form id="form" name="form"  class="form">
+        <label for="name" class="input-label">Name</label>
+        <input id="name" name="name" type="text" class="form-input" required>
+        <label for="rating" class="input-label">Rating</label>
+        <select id="rating" name="rating" aria-label="Select rating" class="form-input">
+          <option value="5">5</option>
+          <option value="4">4</option>
+          <option value="3">3</option>
+          <option value="2">2</option>
+          <option value="1">1</option>
+        </select>
+        <label for="comments" class="input-label">Comments</label>
+        <textarea name="comments" id="comments" maxlength="140" rows="4" class="form-input" required ></textarea>
+        <input type="submit" value="Post" class="form-input">
+      </form>
+    </section>
     <!-- End reviews -->
   </main>
   <!-- End main -->

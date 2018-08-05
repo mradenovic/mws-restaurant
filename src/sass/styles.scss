@@ -17,6 +17,10 @@ body {
   position: relative;
 }
 
+input, textarea, select, button {
+  display: block;
+}
+
 ul, li {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 10pt;
@@ -157,9 +161,13 @@ nav h1 a {
   margin: 0 20px;
 }
 
-.filter-options select {
+.filter-options select{
+  display: inline-block;
   background-color: white;
   border: 1px solid #fff;
+}
+
+select, .form-input, .input-label {
   font-family: Arial, sans-serif;
   font-size: 14pt;
   /* height: 35px; */
@@ -168,7 +176,8 @@ nav h1 a {
   padding: 0 10px;
   width: 200px;
 }
-select:focus {
+
+select:focus, input:focus, textarea:focus {
   outline-color: orange;
   box-shadow: 0 0 8px 3px orange;
 }
@@ -300,7 +309,7 @@ footer {
   text-transform: uppercase;
 }
 
-.restaurant-container, .reviews-container {
+.restaurant-container, .reviews-container, .review-form {
   grid-gap: 15px;
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
@@ -331,7 +340,7 @@ footer {
 }
 
 /* TODO: add class 'reviews-header' */
-.reviews-container h2 {
+.reviews-container h2, .review-form h2 {
   color: #0275d8;
   font-size: 24pt;
   font-weight: 300;
@@ -385,6 +394,14 @@ footer {
 
 .restaurant-hours td {
   color: #666;
+}
+
+
+.form {
+  max-width: 420px;
+}
+.form-input {
+  width: 100%;
 }
 
 strong {
