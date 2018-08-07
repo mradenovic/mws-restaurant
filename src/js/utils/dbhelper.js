@@ -29,7 +29,7 @@ export default class DBService {
 
   getRegistration() {
     return new Promise((resolve, reject) => {
-      if (location.protocol != 'https:') {
+      if (location.protocol != 'https:' && !location.hostname == 'localhost') {
         reject('Only secured origins allow service workers');
       }
       if ('serviceWorker' in navigator && 'SyncManager' in window) {
@@ -280,7 +280,7 @@ export default class DBService {
       })
       .catch(e => {
         console.log('Syncing error;', e);
-        this.fetchPutFavorite(putUrl);
+        this.remotePutFavorite(putUrl);
       });
   }
 

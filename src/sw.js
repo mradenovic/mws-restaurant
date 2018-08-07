@@ -57,7 +57,7 @@ self.addEventListener('fetch', function(event) {
 });
 
 self.addEventListener('sync', function(event) {
-  const [method, url] = event.tag.split('@');
-  console.log(method, url);
-  event.waitUntil(fetch(url, {method: method}));
+  const [method, url, data] = event.tag.split('@');
+  console.log(method, url, data);
+  event.waitUntil(fetch(url, {method: method, body: data}));
 });
