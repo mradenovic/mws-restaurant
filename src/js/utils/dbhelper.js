@@ -29,6 +29,9 @@ export default class DBService {
 
   getRegistration() {
     return new Promise((resolve, reject) => {
+      if (location.protocol != 'https:') {
+        reject('Only secured origins allow service workers');
+      }
       if ('serviceWorker' in navigator && 'SyncManager' in window) {
         resolve(navigator.serviceWorker.ready);
       } else {
@@ -285,6 +288,34 @@ export default class DBService {
     return fetch(url, {method: 'PUT'});
   }
 
+
+  postReview(review) {
+    const {DB_URL} = this;
+    const PATH = '/reviews/';
+    const postUrl = `${DB_URL}${PATH}`;
+    const data = JSON.stringify(review);
+    return this.getRegistration()
+      // if possible do  background sync
+      .then(reg => {
+        return reg.sync.register(`POST@${postUrl}@${data}`);
+      })
+      // if background sync not supported
+      // do instant sync
+      .catch(e => {
+        console.log('Syncing error;', e);
+        return this.remotePostReview(postUrl, data)
+          .then(review => this.idbPostRecords('reviews', [review]))
+          // return newly created review
+          .then(reviews => reviews[0]);
+      });
+  }
+
+  remotePostReview(postUrl, review) {
+    return fetch(postUrl, {method: 'POST', body: review})
+      .then(response => this.handleFetchError(response))
+      .then(response => response.json());
+  }
+
   /**
    * Gets filtered restaurants
    * 
@@ -313,7 +344,12 @@ export default class DBService {
    */
   remoteGetReviews(id) {
     const {DB_URL} = this;
-    return this.remoteGetRecords(`${DB_URL}/reviews/?restaurant_id=${id}`);
+    let PATH = '/reviews/';
+    if (id) {
+      PATH += `?restaurant_id=${id}`;
+    }
+
+    return this.remoteGetRecords(`${DB_URL}${PATH}`);
   }
 
   /**

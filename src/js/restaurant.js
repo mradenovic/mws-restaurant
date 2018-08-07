@@ -7,6 +7,25 @@ class RestaurantController {
   constructor() {
     this.db = new DBService();
     this.id = this.getParameterByName('id');
+
+    document.getElementById('form')
+      .addEventListener('submit', (event) => this.postReview(event));
+  }
+
+  postReview(event) {
+    event.preventDefault();
+    let review = {};
+    let formData = new FormData(event.target);
+
+    review = {
+      restaurant_id: Number(this.id),
+      name: formData.get('name'),
+      rating: Number(formData.get('rating')),
+      comments: formData.get('comments')
+    };
+
+    this.db.postReview(review)
+      .then(() => console.log('post promise fulfiled', review));
   }
 
   init() {
