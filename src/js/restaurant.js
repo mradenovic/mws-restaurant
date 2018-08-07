@@ -25,7 +25,7 @@ class RestaurantController {
     };
 
     this.db.postReview(review)
-      .then(() => console.log('post promise fulfiled', review));
+      .then(() => this.appendReview(review));
   }
 
   init() {
@@ -132,6 +132,11 @@ class RestaurantController {
       ul.appendChild(this.createReviewHTML(review));
     });
     container.appendChild(ul);
+  }
+
+  appendReview(review) {
+    const ul = document.getElementById('reviews-list');
+    ul.appendChild(this.createReviewHTML(review));
   }
 
   /**
