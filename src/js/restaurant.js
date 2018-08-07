@@ -156,7 +156,7 @@ class RestaurantController {
     heading.appendChild(name);
 
     const date = document.createElement('span');
-    date.innerHTML = review.date;
+    date.innerHTML = new Date(review.createdAt).toLocaleString();
     date.className = 'review-date';
     heading.appendChild(date);
 
