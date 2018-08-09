@@ -5,6 +5,9 @@
  * some changes by M. Radenovic
  */
 
+import idb  from './js/utils/idbService.js';
+import remote from './js/utils/remoteService.js';
+
 var CACHE_NAME = 'restaurants-cache-v1';
 var urlsToCache = [
   '/',
@@ -59,5 +62,22 @@ self.addEventListener('fetch', function(event) {
 self.addEventListener('sync', function(event) {
   const [method, url, data] = event.tag.split('@');
   console.log(method, url, data);
-  event.waitUntil(fetch(url, {method: method, body: data}));
+  event.waitUntil(sync(event.tag));
 });
+
+function sync(tag) {
+  const [method, url, data] = tag.split('@');
+  switch (method) {
+    case 'POST':
+      remote.postReview(url, data)
+        .then(review => idb.postRecords('reviews', [review]))
+        .catch(e => console.log('Background sync (Post review) failed:', e));
+      break;
+    case 'PUT':
+      fetch(url, {method: method, body: data})
+        .catch(e => console.log('Background sync (Put restaurant) failed:', e));
+      break;
+    default:
+      console.log('Unsupported sync request');
+  }
+}
