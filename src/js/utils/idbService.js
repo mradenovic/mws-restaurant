@@ -118,7 +118,7 @@ class IDBService {
    * @param {string} objectStoreName - The name of the object store.
    * @param {Object} record - The record to be updated. 
    */
-  putRecord(objectStoreName, records) {
+  putRecords(objectStoreName, records) {
     return this.db
       .then(db => {
         var tx = db.transaction([objectStoreName], 'readwrite');
