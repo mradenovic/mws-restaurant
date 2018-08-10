@@ -1,4 +1,4 @@
-import idb from 'idb';
+import idb from './idbService.js';
 
 /** Databse Service
  * 
@@ -44,27 +44,6 @@ export default class DBService {
     const HOST = 'http://localhost';
     const PORT = '1337';
     this.DB_URL = `${HOST}:${PORT}`;
-    this.db = this.idbGetDB();
-  }
-
-  idbGetDB() {
-    return idb.open('restaurant-reviews', 2, upgradeDB => {
-      // Note: we don't use 'break' in this switch statement,
-      // the fall-through behaviour is what we want.
-      switch (upgradeDB.oldVersion) {
-        case 0:
-          upgradeDB.createObjectStore('restaurants', {
-            keyPath: 'id'
-          });
-          // eslint-disable-line no-fallthrough
-        case 1: {
-          const reviews = upgradeDB.createObjectStore('reviews', {
-            keyPath: 'id'
-          });
-          reviews.createIndex('restaurant', 'restaurant_id', {unique: false});
-        }
-      }
-    });   
   }
 
   /**
@@ -82,23 +61,6 @@ export default class DBService {
       throw Error(response.status.text);
     }
     return response;
-  }
-
-  /**
-   * Get reviews for the restaurant from IndexedDB
-   * 
-   * @param {String} id 
-   */
-  idbGetReviews(id) {
-    return this.idbGetRecords('reviews', 'restaurant', id);
-  }
-
-  /**
-   * Get restaurants from IndexedDB
-   * 
-   */
-  idbGetRestaurants() {
-    return this.idbGetRecords('restaurants');
   }
 
   /**
@@ -135,103 +97,18 @@ export default class DBService {
   }
 
   /**
-   * Get records from IndexedDB
-   * 
-   * If indexName and indexValue are provided, filtered result will be returned.
-   * Otherwise, all records will be returned.
-   * 
-   * @param {string} objectStoreName - The name of the object store.
-   * @param {string} indexName - The name of the index.
-   * @param {string} indexValue - The index value.
-   */
-  idbGetRecords(objectStoreName, indexName, indexValue) {
-    return this.db.then(db => {
-      let tx = db.transaction([objectStoreName], 'readonly');
-      let store = tx.objectStore(objectStoreName);
-      if (indexName && indexValue) {
-        let index = store.index(indexName);
-        return index.getAll(IDBKeyRange.only(Number(indexValue)));
-      } else {
-        return store.getAll();
-      }
-    });
-  }
-
-  /**
-   * Store reviews into IndexedDB
-   * 
-   * @param {Object[]} reviews - The reviews to be stored.
-   */
-  idbPostReviews(reviews) {
-    return this.idbPostRecords('reviews', reviews);
-  }
-
-  /**
-   * Store reviews into IndexedDB
-   * 
-   * @param {Object[]} reviews - The reviews to be stored.
-   */
-  idbPostRestaurants(restaurants) {
-    return this.idbPostRecords('restaurants', restaurants);
-  }
-
-  /**
-   * Store records into IndexedDB
-   * 
-   * @param {string} objectStoreName - The name of the object store.
-   * @param {Object[]} records - The records to be stored. 
-   */
-  idbPostRecords(objectStoreName, records) {
-    return this.db
-      .then(db => {
-        var tx = db.transaction([objectStoreName], 'readwrite');
-        var store = tx.objectStore(objectStoreName);
-        return Promise.all(records.map(record => {
-          return store.add(record);
-        })
-        ).catch(e => {
-          tx.abort();
-          console.log(e);
-        });
-      })
-      // return records Promise
-      .then(() => records);
-  }
-
-  /**
-   * Store record into IndexedDB
-   * 
-   * @param {string} objectStoreName - The name of the object store.
-   * @param {Object} record - The record to be updated. 
-   */
-  idbPutRecord(objectStoreName, record) {
-    return this.db
-      .then(db => {
-        var tx = db.transaction([objectStoreName], 'readwrite');
-        var store = tx.objectStore(objectStoreName);
-        return store.put(record)
-          .catch(e => {
-            tx.abort();
-            console.log(e);
-          });
-      })
-      // return records Promise
-      .then(() => record);
-  }
-
-  /**
    * Gets reviews for the restaurant
    * 
    * @param {String} id 
    */
   getReviews(id) {
-    return this.idbGetReviews(id)
+    return idb.getReviews(id)
       .then(reviews => {
         if (reviews && reviews.length > 0) {
           return reviews;
         } else {
           return this.remoteGetReviews(id)
-            .then(reviews => this.idbPostReviews(reviews));
+            .then(reviews => idb.postReviews(reviews));
         }
       });
   }
@@ -242,13 +119,13 @@ export default class DBService {
    * @return {Object[]}
    */
   getRestaurants() {
-    return this.idbGetRestaurants()
+    return idb.getRestaurants()
       .then(restaurants => {
         if (restaurants && restaurants.length > 0) {
           return restaurants;
         } else {
           return this.remoteGetRestaurants()
-            .then(restaurants => this.idbPostRestaurants(restaurants));
+            .then(restaurants => idb.postRestaurants(restaurants));
         }
       });
   }
@@ -265,7 +142,7 @@ export default class DBService {
   }
 
   putFavorite(restaurant) {
-    return this.idbPutRecord('restaurants', restaurant)
+    return idb.putRecords('restaurants', [restaurant])
       .then(() => this.syncPutFavorite(restaurant));
   }
 
@@ -304,7 +181,7 @@ export default class DBService {
       .catch(e => {
         console.log('Syncing error;', e);
         return this.remotePostReview(postUrl, data)
-          .then(review => this.idbPostRecords('reviews', [review]))
+          .then(review => idb.postRecords('reviews', [review]))
           // return newly created review
           .then(reviews => reviews[0]);
       });
