@@ -29,7 +29,7 @@ self.addEventListener('install', function(event) {
 
 self.addEventListener('fetch', function(event) {
   event.respondWith(
-    caches.match(event.request,  {'ignoreSearch': true})
+    caches.match(event.request,  {ignoreSearch: true})
       .then(function(response) {
         // Cache hit - return response
         if (response) {
@@ -42,7 +42,10 @@ self.addEventListener('fetch', function(event) {
         return fetch(fetchRequest).then(
           function(response) {
             // Check if we received a valid response
-            if(!response || response.status !== 200 || (response.type !== 'basic' && response.type !== 'cors')) {
+            let skipCache = !response || response.status !== 200;
+            skipCache |= response.type !== 'basic' && response.type !== 'cors';
+            skipCache |= response.url.includes('/reviews/');
+            if(skipCache) {
               return response;
             }
             var responseToCache = response.clone();
