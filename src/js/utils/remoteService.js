@@ -42,7 +42,7 @@ export default class RemoteService {
       .then(response => response.json());
   }  
 
-  static putFavorite(url) {
+  static updateFavorite(url) {
     return fetch(url, {method: 'PUT'})
       .then(response => this.handleFetchError(response))
       .then(response => response.json());

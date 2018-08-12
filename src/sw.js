@@ -77,7 +77,7 @@ function sync(tag) {
         .catch(e => console.log('Background sync (Post review) failed:', e));
       break;
     case 'PUT':
-      remote.putFavorite(url)
+      remote.updateFavorite(url)
         .then(restaurant => idb.putRecords('restaurants', [restaurant]))
         .catch(e => console.log('Background sync (Put restaurant) failed:', e));
       break;

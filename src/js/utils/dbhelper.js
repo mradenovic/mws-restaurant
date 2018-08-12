@@ -161,7 +161,7 @@ export default class DBService {
       // do instant sync
       .catch(e => {
         console.log('Syncing error;', e);
-        return remote.putFavorite(updateUrl)
+        return remote.updateFavorite(updateUrl)
           .then(restaurant => idb.putRecords('restaurants', [restaurant]))
           // return updated restaurant
           .then(restaurants => restaurants[0]);
