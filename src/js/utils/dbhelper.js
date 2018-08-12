@@ -1,4 +1,5 @@
 import idb from './idbService.js';
+import remote from './remoteService.js';
 
 /** Databse Service
  * 
@@ -104,11 +105,16 @@ export default class DBService {
   getReviews(id) {
     return idb.getReviews(id)
       .then(reviews => {
+        // console.log(`idb.getReviews(${id})`, id, reviews)
         if (reviews && reviews.length > 0) {
           return reviews;
         } else {
-          return this.remoteGetReviews(id)
-            .then(reviews => idb.postReviews(reviews));
+          // console.log('reviews before remote.get()', reviews)
+          return remote.getReviews(id)
+            .then(reviews => {
+              // console.log(`remote.getReviews(${id}):`, reviews);
+              return idb.postReviews(reviews);
+            });
         }
       });
   }
@@ -124,7 +130,7 @@ export default class DBService {
         if (restaurants && restaurants.length > 0) {
           return restaurants;
         } else {
-          return this.remoteGetRestaurants()
+          return remote.getRestaurants()
             .then(restaurants => idb.postRestaurants(restaurants));
         }
       });
@@ -157,14 +163,9 @@ export default class DBService {
       })
       .catch(e => {
         console.log('Syncing error;', e);
-        this.remotePutFavorite(putUrl);
+        remote.putFavorite(putUrl);
       });
   }
-
-  remotePutFavorite(url) {
-    return fetch(url, {method: 'PUT'});
-  }
-
 
   postReview(review) {
     const {DB_URL} = this;
@@ -180,17 +181,11 @@ export default class DBService {
       // do instant sync
       .catch(e => {
         console.log('Syncing error;', e);
-        return this.remotePostReview(postUrl, data)
+        return remote.postReview(postUrl, data)
           .then(review => idb.postRecords('reviews', [review]))
           // return newly created review
           .then(reviews => reviews[0]);
       });
-  }
-
-  remotePostReview(postUrl, review) {
-    return fetch(postUrl, {method: 'POST', body: review})
-      .then(response => this.handleFetchError(response))
-      .then(response => response.json());
   }
 
   /**
@@ -211,44 +206,6 @@ export default class DBService {
         }
         return restaurants;
       });
-  }
-
-  /**
-   * Fetch reviews for the restaurant from a remote server
-   * 
-   * @param {String} id restaurant id
-   * @returns {Object[]}  
-   */
-  remoteGetReviews(id) {
-    const {DB_URL} = this;
-    let PATH = '/reviews/';
-    if (id) {
-      PATH += `?restaurant_id=${id}`;
-    }
-
-    return this.remoteGetRecords(`${DB_URL}${PATH}`);
-  }
-
-  /**
-   * Fetch restaurants from a remote server
-   * 
-   * @returns {Object[]}  
-   */
-  remoteGetRestaurants() {
-    const {DB_URL} = this;
-    return this.remoteGetRecords(`${DB_URL}/restaurants`);
-  }
-
-  /**
-   * Fetch array of objects from a remote server
-   *
-   * @param {stirng} url  
-   * @returns {Object[]}  
-   */
-  remoteGetRecords(url) {
-    return fetch(url)
-      .then(response => this.handleFetchError(response))
-      .then(response => response.json());
   }
 
 }

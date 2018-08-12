@@ -1,5 +1,12 @@
 export default class RemoteService {
 
+  static get DB_URL() {
+    const HOST = 'http://localhost';
+    const PORT = '1337';
+    return `${HOST}:${PORT}`;
+}
+
+
   /**
    * Handle fetch errors
    * 
@@ -34,4 +41,36 @@ export default class RemoteService {
       .then(response => this.handleFetchError(response))
       .then(response => response.json());
   }  
+
+  static putFavorite(url) {
+    return fetch(url, {method: 'PUT'})
+      .then(response => this.handleFetchError(response))
+      .then(response => response.json());
+  }
+
+  /**
+   * Fetch reviews for the restaurant from a remote server
+   * 
+   * @param {String} id restaurant id
+   * @returns {Object[]}  
+   */
+  static getReviews(id) {
+    const {DB_URL} = this;
+    let PATH = '/reviews/';
+    if (id) {
+      PATH += `?restaurant_id=${id}`;
+    }
+    return this.getRecords(`${DB_URL}${PATH}`);
+  }
+
+  /**
+   * Fetch restaurants from a remote server
+   * 
+   * @returns {Object[]}  
+   */
+  static getRestaurants() {
+    const {DB_URL} = this;
+    return this.getRecords(`${DB_URL}/restaurants`);
+  }
+
 }
