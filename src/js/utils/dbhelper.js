@@ -147,25 +147,27 @@ export default class DBService {
       .then(restaurants => restaurants.find(r => r.id == id ));
   }
 
-  putFavorite(restaurant) {
-    return idb.putRecords('restaurants', [restaurant])
-      .then(() => this.syncPutFavorite(restaurant));
-  }
-
-  syncPutFavorite(restaurant) {
+  updateFavorite(restaurant) {
     const {id, is_favorite} = restaurant;
     const {DB_URL} = this;
     const PATH = `/restaurants/${id}/?is_favorite=${is_favorite}`;
-    const putUrl = `${DB_URL}${PATH}`;
+    const updateUrl = `${DB_URL}${PATH}`;
     return this.getRegistration()
+      // if possible do  background sync
       .then(reg => {
-        return reg.sync.register(`PUT@${putUrl}`);
+        return reg.sync.register(`PUT@${updateUrl}`);
       })
+      // if background sync not supported
+      // do instant sync
       .catch(e => {
         console.log('Syncing error;', e);
-        remote.putFavorite(putUrl);
+        return remote.putFavorite(updateUrl)
+          .then(restaurant => idb.putRecords('restaurants', [restaurant]))
+          // return updated restaurant
+          .then(restaurants => restaurants[0]);
       });
   }
+
 
   postReview(review) {
     const {DB_URL} = this;
