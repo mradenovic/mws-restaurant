@@ -155,16 +155,16 @@ export default class DBService {
     return this.getRegistration()
       // if possible do  background sync
       .then(reg => {
-        return reg.sync.register(`PUT@${updateUrl}`);
+        return idb.putRecords('restaurants', [restaurant])
+          .then(() => reg.sync.register(`PUT@${updateUrl}`))
+          .then(syncReg => console.log(syncReg));
       })
       // if background sync not supported
-      // do instant sync
+      // sync only on remote update success
       .catch(e => {
         console.log('Syncing error;', e);
         return remote.updateFavorite(updateUrl)
-          .then(restaurant => idb.putRecords('restaurants', [restaurant]))
-          // return updated restaurant
-          .then(restaurants => restaurants[0]);
+          .then(idb.putRecords('restaurants', [restaurant]));
       });
   }
 
