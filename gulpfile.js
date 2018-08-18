@@ -10,14 +10,17 @@ var browserify = require('gulp-browserify');
 var uglify = require('gulp-uglify');
 var webserver = require('gulp-webserver');
 
-gulp.task('default', ['copy'], function () {
-  gulp.watch('src/**/*.*', ['reload']);
+gulp.task('default', ['build'], function () {
+  gulp.watch('src/**/*.*', ['build']);
 
-  browserSync.init({
-    browser: ['google-chrome'],
-    server: 'dist',
-    port: '8000'
-  });
+  gulp.src('dist')
+    .pipe(webserver());
+
+  // browserSync.init({
+  //   browser: ['google-chrome'],
+  //   server: 'dist',
+  //   port: '8000'
+  // });
 });
 
 gulp.task('lint', function () {
@@ -65,14 +68,14 @@ gulp.task('manifest', () => {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('copy', ['manifest', 'img', 'html', 'sass', 'js']);
+gulp.task('build', ['manifest', 'img', 'html', 'sass', 'js']);
 
-gulp.task('reload', ['copy'], function (done) {
+gulp.task('reload', ['build'], function (done) {
   browserSync.reload();
   done();
 });
 
-gulp.task('serve', ['copy'], function() {
+gulp.task('serve', ['build'], function() {
   gulp.src('dist')
     .pipe(webserver());
 });
